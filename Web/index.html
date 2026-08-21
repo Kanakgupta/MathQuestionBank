@@ -15,6 +15,7 @@
       </a>
       <div class="topbar-right">
         <span class="spark-count" id="sparkCount">0 sparks</span>
+        <button class="reward-button" id="openRewards">My trophies</button>
         <button class="icon-button" id="resetProgress" title="Reset progress" aria-label="Reset progress">↻</button>
       </div>
     </header>
@@ -40,7 +41,7 @@
           <button class="grade-button active" data-grade="4">Grade 4</button>
           <button class="grade-button" data-grade="5">Grade 5</button>
         </div>
-        <p id="gradeSummary">Two volumes, eight chapters, and a path built for Grade 4.</p>
+        <p id="gradeSummary">Choose a chapter, then choose one concept to master.</p>
       </section>
 
       <section class="chapter-section">
@@ -59,6 +60,13 @@
       <p class="eyebrow">Quick power-up</p><h2 id="reteachTitle">Let’s look at the idea again</h2>
       <div id="reteachContent"></div>
       <button class="primary-button" id="tryAgain">Try this challenge again</button>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="rewardsModal" hidden>
+    <section class="reteach-modal rewards-modal" role="dialog" aria-modal="true" aria-labelledby="rewardsTitle">
+      <p class="eyebrow">Your collection</p><h2 id="rewardsTitle">Trophy cabinet</h2>
+      <div id="rewardsContent"></div>
+      <button class="primary-button" id="closeRewards">Back to missions</button>
     </section>
   </div>
   <script src="app.js"></script>
