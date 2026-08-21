@@ -58,9 +58,14 @@ function strategyQuestion(concept, chapterName, number) {
     [`A classmate is stuck on ${concept.toLowerCase()}. What is the best next step?`, 'Draw or use the chapter model to organize the math idea.', 'Give up after one try.', 'Pick an answer at random.', 'Write a new unrelated question.'],
     [`Which statement about ${concept.toLowerCase()} is true?`, 'A clear model can show how the numbers and operations are connected.', 'The answer never needs checking.', 'All problems use the same operation.', 'Units are never important.'],
     [`What should a strong math explanation include for ${concept.toLowerCase()}?`, 'The operation or model used and why it gives the answer.', 'Only the answer with no work.', 'A different topic.', 'A list of random numbers.'],
-    [`After you solve a ${concept.toLowerCase()} problem, what is a smart final check?`, 'Ask whether the result is reasonable for the situation.', 'Make the answer much larger.', 'Delete the units.', 'Never look at the question again.']
+    [`After you solve a ${concept.toLowerCase()} problem, what is a smart final check?`, 'Ask whether the result is reasonable for the situation.', 'Make the answer much larger.', 'Delete the units.', 'Never look at the question again.'],
+    [`What should you label in a ${concept.toLowerCase()} word problem?`, 'The units and what the final number means.', 'Only the largest digit.', 'A random title.', 'Nothing at all.'],
+    [`Which tool can help you organize a ${concept.toLowerCase()} idea?`, 'A drawing, table, number line, or model that matches the problem.', 'A blank page with no work.', 'An unrelated formula.', 'A guess written in pencil.'],
+    [`When should you slow down in a ${concept.toLowerCase()} problem?`, 'When a step changes the size, unit, or place value of a number.', 'Never; speed is the only goal.', 'Only after choosing an answer.', 'When the problem has a short sentence.'],
+    [`What makes an answer believable in ${concept.toLowerCase()}?`, 'It agrees with the model and is reasonable when estimated.', 'It has the most digits.', 'It is always an even number.', 'It matches a classmate’s guess.'],
+    [`If your first ${concept.toLowerCase()} answer looks strange, what should you do?`, 'Return to the model and check each step in order.', 'Keep it without checking.', 'Choose a new operation randomly.', 'Delete the question.']
   ];
-  const item = prompts[number];
+  const item = [...prompts[number]];
   item.concept = number % 3;
   return item;
 }
@@ -117,8 +122,25 @@ function chaptersFor(subject, grade) { const content = subjectContent[subject]; 
 function gradeLabel(grade) { return grade == null ? '' : grade === 'K' ? 'Kindergarten' : `Grade ${grade}`; }
 function currentChapter() { return chaptersFor(state.subject, state.grade)[state.chapter]; }
 function missionKey() { return `${state.subject}-${state.grade}-${state.chapter}-${state.concept}`; }
-function genericQuestions() { const items = questionSets[state.grade][state.chapter].filter(item => item.concept === state.concept); const base = items.length ? items : questionSets[state.grade][state.chapter]; return Array.from({ length: 10 }, (_, index) => { const item = base[index % base.length]; return { question: item[0], correct: item[1], options: item.slice(1), id: index }; }); }
-function currentQuestions() { return state.subject === 'math' && state.grade === 4 && state.chapter === 0 && state.concept === 0 ? placeValueQuestions.map(item => ({ question:item[0], correct:item[1], options:item.slice(1), id:item.id })) : genericQuestions(); }
+function missionQuestionsFor(grade, chapterIndex, conceptIndex) {
+  if (grade === 4 && chapterIndex === 0 && conceptIndex === 0) {
+    return placeValueQuestions.map((item, index) => ({ question: item[0], correct: item[1], options: item.slice(1), id: index }));
+  }
+  const chapter = course[grade].chapters[chapterIndex];
+  const concept = chapter[1][conceptIndex];
+  const seedItems = questionSets[grade][chapterIndex].filter(item => item.concept === conceptIndex);
+  const uniqueItems = [];
+  for (const item of seedItems) {
+    if (!uniqueItems.some(existing => existing[0] === item[0])) uniqueItems.push(item);
+  }
+  for (let index = 0; uniqueItems.length < 10; index++) {
+    const item = strategyQuestion(concept, chapter[0], index);
+    if (!uniqueItems.some(existing => existing[0] === item[0])) uniqueItems.push(item);
+  }
+  return uniqueItems.slice(0, 10).map((item, index) => ({ question: item[0], correct: item[1], options: item.slice(1), id: index }));
+}
+function genericQuestions() { return missionQuestionsFor(state.grade, state.chapter, state.concept); }
+function currentQuestions() { return genericQuestions(); }
 function currentQuestion() { return currentQuestions()[state.question]; }
 function subjectHasContent(id, grade) { return !!chaptersFor(id, grade); }
 function gradeHasContent(grade) { return subjects.some(subject => chaptersFor(subject.id, grade)); }
@@ -320,4 +342,11 @@ $('#tryAgain').addEventListener('click', () => { $('#reteachModal').hidden = tru
 $('#openRewards').addEventListener('click', () => { renderRewards(); $('#rewardsModal').hidden = false; });
 $('#closeRewards').addEventListener('click', () => { $('#rewardsModal').hidden = true; });
 $('#resetProgress').addEventListener('click', () => { state.sparks = 0; state.started = []; state.trophies = []; save(); $('#sparkCount').textContent = '0 sparks'; renderChapters(); });
+window.NumberQuestTestAPI = Object.freeze({
+  course,
+  conceptLessons,
+  conceptCases,
+  conceptVisualMap,
+  missionQuestionsFor
+});
 $('#sparkCount').textContent = `${state.sparks} sparks`; renderSubjectTabs(); renderGradeRail(); renderChapters();
