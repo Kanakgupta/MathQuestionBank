@@ -101,19 +101,47 @@ const placeValueQuestions = [
   ['A digit moves from the thousands place to the ten-thousands place. Its value becomes how many times greater?', '10 times', '2 times', '100 times', '1/10 as great']
 ];
 
-let state = { grade: 4, chapter: null, concept: null, question: 0, attempts: 0, answers: {}, sparks: Number(localStorage.getItem('numberQuestSparks') || 0), started: JSON.parse(localStorage.getItem('numberQuestStarted') || '[]'), trophies: JSON.parse(localStorage.getItem('numberQuestTrophies') || '[]') };
+let state = { subject: 'math', grade: 4, chapter: null, concept: null, question: 0, attempts: 0, answers: {}, sparks: Number(localStorage.getItem('numberQuestSparks') || 0), started: JSON.parse(localStorage.getItem('numberQuestStarted') || '[]'), trophies: JSON.parse(localStorage.getItem('numberQuestTrophies') || '[]') };
 const $ = selector => document.querySelector(selector);
 function save() { localStorage.setItem('numberQuestSparks', state.sparks); localStorage.setItem('numberQuestStarted', JSON.stringify(state.started)); localStorage.setItem('numberQuestTrophies', JSON.stringify(state.trophies)); }
-function currentChapter() { return course[state.grade].chapters[state.chapter]; }
-function missionKey() { return `${state.grade}-${state.chapter}-${state.concept}`; }
+const subjects = [
+  { id: 'math', name: 'Mathematics', symbol: '∑', blurb: 'Numbers, shapes, and problem solving', grades: [4, 5] },
+  { id: 'science', name: 'Science', symbol: '⚛', blurb: 'Investigate how the world works', grades: [] },
+  { id: 'ela', name: 'Reading & Writing', symbol: '✎', blurb: 'Stories, words, and clear ideas', grades: [] },
+  { id: 'social', name: 'Social Studies', symbol: '◍', blurb: 'People, places, and history', grades: [] }
+];
+const ALL_GRADES = ['K', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const subjectContent = { math: course };
+function subjectById(id) { return subjects.find(item => item.id === id); }
+function chaptersFor(subject, grade) { const content = subjectContent[subject]; return content && content[grade] ? content[grade].chapters : null; }
+function gradeLabel(grade) { return grade == null ? '' : grade === 'K' ? 'Kindergarten' : `Grade ${grade}`; }
+function currentChapter() { return chaptersFor(state.subject, state.grade)[state.chapter]; }
+function missionKey() { return `${state.subject}-${state.grade}-${state.chapter}-${state.concept}`; }
 function genericQuestions() { const items = questionSets[state.grade][state.chapter].filter(item => item.concept === state.concept); const base = items.length ? items : questionSets[state.grade][state.chapter]; return Array.from({ length: 10 }, (_, index) => { const item = base[index % base.length]; return { question: item[0], correct: item[1], options: item.slice(1), id: index }; }); }
-function currentQuestions() { return state.grade === 4 && state.chapter === 0 && state.concept === 0 ? placeValueQuestions.map(item => ({ question:item[0], correct:item[1], options:item.slice(1), id:item.id })) : genericQuestions(); }
+function currentQuestions() { return state.subject === 'math' && state.grade === 4 && state.chapter === 0 && state.concept === 0 ? placeValueQuestions.map(item => ({ question:item[0], correct:item[1], options:item.slice(1), id:item.id })) : genericQuestions(); }
 function currentQuestion() { return currentQuestions()[state.question]; }
+function renderSubjectTabs() {
+  $('#subjectTabs').innerHTML = subjects.map(subject => `<button class="subject-tab ${subject.id === state.subject ? 'active' : ''} ${subject.grades.length ? '' : 'soon'}" data-subject="${subject.id}"><span class="subject-symbol">${subject.symbol}</span><span class="subject-text"><strong>${subject.name}</strong><small>${subject.grades.length ? subject.blurb : 'Coming soon'}</small></span></button>`).join('');
+  document.querySelectorAll('[data-subject]').forEach(button => button.addEventListener('click', () => selectSubject(button.dataset.subject)));
+}
+function renderGradeRail() {
+  const subject = subjectById(state.subject);
+  $('#gradeRail').innerHTML = ALL_GRADES.map(grade => { const active = subject.grades.includes(grade); return `<button class="grade-chip ${grade === state.grade ? 'active' : ''} ${active ? '' : 'soon'}" data-grade="${grade}" ${active ? '' : 'disabled'}>${grade === 'K' ? 'K' : 'Gr ' + grade}</button>`; }).join('');
+  document.querySelectorAll('[data-grade]').forEach(button => button.addEventListener('click', () => { if (button.disabled) return; state.grade = button.dataset.grade === 'K' ? 'K' : Number(button.dataset.grade); resetToChapters(); renderGradeRail(); renderChapters(); }));
+}
+function selectSubject(id) { state.subject = id; state.grade = subjectById(id).grades[0] ?? null; resetToChapters(); renderSubjectTabs(); renderGradeRail(); renderChapters(); }
+function resetToChapters() { state.chapter = null; state.concept = null; $('#emptyState').hidden = false; $('#lessonView').hidden = true; }
 function renderChapters() {
-  const chapters = course[state.grade].chapters;
-  $('#gradeSummary').textContent = 'Choose a chapter, then choose one concept to master.';
-  $('#chapterGrid').innerHTML = chapters.map((chapter, index) => `<button class="chapter-card ${state.started.includes(`${state.grade}-${index}`) ? 'started' : ''}" data-chapter="${index}"><span class="chapter-number">${index + 1}</span><h3>${chapter[0]}</h3><p>${chapter[1].join(' · ')}</p></button>`).join('');
-  $('#chapterProgress').textContent = `${state.started.filter(item => item.startsWith(`${state.grade}-`)).length} of 8 chapters started`;
+  const subject = subjectById(state.subject), chapters = chaptersFor(state.subject, state.grade), label = gradeLabel(state.grade);
+  $('#chapterHeading').textContent = `${subject.name}${label ? ' · ' + label : ''}`;
+  if (!chapters) {
+    $('#emptyState').hidden = true; $('#lessonView').hidden = true; $('#chapterProgress').textContent = '';
+    $('#chapterGrid').innerHTML = `<div class="coming-soon"><div class="soon-badge">Coming soon</div><h3>${subject.name}${label ? ' · ' + label : ''} is on the way</h3><p>We are building the platform in phases. Mathematics for Grade 4 and Grade 5 is ready now — choose it from the subject bar to start practicing.</p></div>`;
+    return;
+  }
+  const prefix = `${state.subject}-${state.grade}-`;
+  $('#chapterGrid').innerHTML = chapters.map((chapter, index) => `<button class="chapter-card ${state.started.includes(prefix + index) ? 'started' : ''}" data-chapter="${index}"><span class="chapter-number">${index + 1}</span><h3>${chapter[0]}</h3><p>${chapter[1].join(' · ')}</p></button>`).join('');
+  $('#chapterProgress').textContent = `${state.started.filter(item => item.startsWith(prefix)).length} of ${chapters.length} chapters started`;
   document.querySelectorAll('[data-chapter]').forEach(button => button.addEventListener('click', () => startChapter(Number(button.dataset.chapter))));
 }
 const conceptLessons = {
@@ -254,7 +282,7 @@ const conceptCases = {
   'Decimal operations': [['Divide', '2.4 ÷ 0.3 = 8.'], ['Multiply', '2.4 × 3.5 = 8.40.'], ['Estimate', 'Estimate first so the decimal point lands correctly.']]
 };
 function casesForConcept(concept) { const cases = conceptCases[concept]; return cases ? `<div class="concept-cases"><p class="cases-heading">Explore every case</p><div class="case-grid">${cases.map(([title, text]) => `<div class="case-card"><b>${title}</b><span>${text}</span></div>`).join('')}</div></div>` : ''; }
-function startChapter(index) { state.chapter = index; state.concept = null; state.question = 0; state.attempts = 0; $('#emptyState').hidden = true; $('#lessonView').hidden = false; renderConceptPicker(); $('#playground').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+function startChapter(index) { state.chapter = index; state.concept = null; state.question = 0; state.attempts = 0; const key = `${state.subject}-${state.grade}-${index}`; if (!state.started.includes(key)) { state.started.push(key); save(); } $('#emptyState').hidden = true; $('#lessonView').hidden = false; renderConceptPicker(); renderChapters(); $('#playground').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 function renderConceptPicker() { const chapter = currentChapter(); $('#lessonView').innerHTML = `<section class="lesson-panel concept-picker"><p class="chapter-label">Chapter ${state.chapter + 1}</p><h2>${chapter[0]}</h2><p class="lesson-copy">Pick one skill. Every skill mission has 10 questions and earns its own trophy.</p><div class="concept-choice-grid">${chapter[1].map((concept,index) => `<button class="concept-choice" data-start-concept="${index}"><span>${index + 1}</span><strong>${concept}</strong><small>10-question mission</small></button>`).join('')}</div></section>`; document.querySelectorAll('[data-start-concept]').forEach(button => button.addEventListener('click', () => { state.concept=Number(button.dataset.startConcept); state.question=0; state.attempts=0; state.answers={}; renderLesson(); })); }
 function placeValueVisual() { return `<div class="place-chart"><div class="chart-number">582,641</div><div class="chart-row"><b>Hundred-thousands</b><b>Ten-thousands</b><b>Thousands</b><b>Hundreds</b><b>Tens</b><b>Ones</b></div><div class="chart-row chart-values"><span>5<br><small>500,000</small></span><span class="focus">8<br><small>80,000</small></span><span>2<br><small>2,000</small></span><span>6<br><small>600</small></span><span>4<br><small>40</small></span><span>1<br><small>1</small></span></div></div>`; }
 function renderLesson() {
@@ -280,9 +308,8 @@ function checkAnswer(button, question) {
 function explain(question) { return `Use the concept model step by step. The answer that fits the question is <strong>${question.correct}</strong>.`; }
 function showResults() { const misses = Math.max(0, 10 - state.sparks % 10); const tier = misses <= 1 ? ['Diamond','◆','Outstanding precision. You are ready for a tougher mission.'] : misses <= 4 ? ['Gold','★','Excellent work. Your practice is paying off.'] : misses <= 7 ? ['Silver','●','Strong persistence. Keep building this skill.'] : ['Bronze','▲','You stayed with it. Practice turns effort into power.']; state.trophies.push({ tier:tier[0], symbol:tier[1], concept:currentChapter()[1][state.concept] }); save(); $('#lessonView').innerHTML=`<section class="lesson-panel success-card"><div class="trophy ${tier[0].toLowerCase()}">${tier[1]}</div><p class="eyebrow">Mission complete</p><h2>${tier[0]} trophy earned</h2><p class="lesson-copy">${tier[2]}</p><p class="lesson-copy">You completed all 10 <strong>${currentChapter()[1][state.concept]}</strong> questions. Visit your trophy cabinet to see your growing collection.</p><button class="primary-button" id="backToConcepts">Choose another concept</button></section>`; $('#backToConcepts').addEventListener('click',renderConceptPicker); }
 function renderRewards() { const counts = ['Diamond','Gold','Silver','Bronze'].map(tier => [tier, state.trophies.filter(item => item.tier === tier).length]); $('#rewardsContent').innerHTML = `<div class="reward-totals">${counts.map(([tier,count]) => `<div class="reward-total ${tier.toLowerCase()}"><b>${tier}</b><strong>${count}</strong></div>`).join('')}</div>${state.trophies.length ? `<div class="trophy-list">${state.trophies.slice().reverse().map(item => `<div class="trophy-item ${item.tier.toLowerCase()}"><span>${item.symbol}</span><div><b>${item.tier} trophy</b><small>${item.concept}</small></div></div>`).join('')}</div>` : '<p class="lesson-copy">Your cabinet is waiting. Complete a 10-question concept mission to earn your first trophy.</p>'}`; }
-document.querySelectorAll('.grade-button').forEach(button => button.addEventListener('click', () => { state.grade = Number(button.dataset.grade); state.chapter = null; state.concept = null; $('#emptyState').hidden = false; $('#lessonView').hidden = true; document.querySelectorAll('.grade-button').forEach(item => item.classList.toggle('active', item === button)); renderChapters(); }));
 $('#tryAgain').addEventListener('click', () => { $('#reteachModal').hidden = true; renderLesson(); });
 $('#openRewards').addEventListener('click', () => { renderRewards(); $('#rewardsModal').hidden = false; });
 $('#closeRewards').addEventListener('click', () => { $('#rewardsModal').hidden = true; });
 $('#resetProgress').addEventListener('click', () => { state.sparks = 0; state.started = []; state.trophies = []; save(); $('#sparkCount').textContent = '0 sparks'; renderChapters(); });
-$('#sparkCount').textContent = `${state.sparks} sparks`; renderChapters();
+$('#sparkCount').textContent = `${state.sparks} sparks`; renderSubjectTabs(); renderGradeRail(); renderChapters();
