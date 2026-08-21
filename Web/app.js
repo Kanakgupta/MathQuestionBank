@@ -120,16 +120,22 @@ function missionKey() { return `${state.subject}-${state.grade}-${state.chapter}
 function genericQuestions() { const items = questionSets[state.grade][state.chapter].filter(item => item.concept === state.concept); const base = items.length ? items : questionSets[state.grade][state.chapter]; return Array.from({ length: 10 }, (_, index) => { const item = base[index % base.length]; return { question: item[0], correct: item[1], options: item.slice(1), id: index }; }); }
 function currentQuestions() { return state.subject === 'math' && state.grade === 4 && state.chapter === 0 && state.concept === 0 ? placeValueQuestions.map(item => ({ question:item[0], correct:item[1], options:item.slice(1), id:item.id })) : genericQuestions(); }
 function currentQuestion() { return currentQuestions()[state.question]; }
-function renderSubjectTabs() {
-  $('#subjectTabs').innerHTML = subjects.map(subject => `<button class="subject-tab ${subject.id === state.subject ? 'active' : ''} ${subject.grades.length ? '' : 'soon'}" data-subject="${subject.id}"><span class="subject-symbol">${subject.symbol}</span><span class="subject-text"><strong>${subject.name}</strong><small>${subject.grades.length ? subject.blurb : 'Coming soon'}</small></span></button>`).join('');
-  document.querySelectorAll('[data-subject]').forEach(button => button.addEventListener('click', () => selectSubject(button.dataset.subject)));
-}
+function subjectHasContent(id, grade) { return !!chaptersFor(id, grade); }
+function gradeHasContent(grade) { return subjects.some(subject => chaptersFor(subject.id, grade)); }
 function renderGradeRail() {
-  const subject = subjectById(state.subject);
-  $('#gradeRail').innerHTML = ALL_GRADES.map(grade => { const active = subject.grades.includes(grade); return `<button class="grade-chip ${grade === state.grade ? 'active' : ''} ${active ? '' : 'soon'}" data-grade="${grade}" ${active ? '' : 'disabled'}>${grade === 'K' ? 'K' : 'Gr ' + grade}</button>`; }).join('');
-  document.querySelectorAll('[data-grade]').forEach(button => button.addEventListener('click', () => { if (button.disabled) return; state.grade = button.dataset.grade === 'K' ? 'K' : Number(button.dataset.grade); resetToChapters(); renderGradeRail(); renderChapters(); }));
+  $('#gradeRail').innerHTML = ALL_GRADES.map(grade => { const active = gradeHasContent(grade); return `<button class="grade-chip ${grade === state.grade ? 'active' : ''} ${active ? '' : 'soon'}" data-grade="${grade}" ${active ? '' : 'disabled'}>${grade === 'K' ? 'K' : 'Gr ' + grade}</button>`; }).join('');
+  document.querySelectorAll('[data-grade]').forEach(button => button.addEventListener('click', () => {
+    if (button.disabled) return;
+    state.grade = button.dataset.grade === 'K' ? 'K' : Number(button.dataset.grade);
+    if (!subjectHasContent(state.subject, state.grade)) state.subject = (subjects.find(subject => chaptersFor(subject.id, state.grade)) || {}).id || null;
+    resetToChapters(); renderGradeRail(); renderSubjectTabs(); renderChapters();
+  }));
 }
-function selectSubject(id) { state.subject = id; state.grade = subjectById(id).grades[0] ?? null; resetToChapters(); renderSubjectTabs(); renderGradeRail(); renderChapters(); }
+function renderSubjectTabs() {
+  $('#subjectTabs').innerHTML = subjects.map(subject => { const available = subjectHasContent(subject.id, state.grade); return `<button class="subject-tab ${subject.id === state.subject ? 'active' : ''} ${available ? '' : 'soon'}" data-subject="${subject.id}" ${available ? '' : 'disabled'}><span class="subject-symbol">${subject.symbol}</span><span class="subject-text"><strong>${subject.name}</strong><small>${available ? subject.blurb : 'Coming soon'}</small></span></button>`; }).join('');
+  document.querySelectorAll('[data-subject]').forEach(button => button.addEventListener('click', () => { if (button.disabled) return; selectSubject(button.dataset.subject); }));
+}
+function selectSubject(id) { if (!subjectHasContent(id, state.grade)) return; state.subject = id; resetToChapters(); renderSubjectTabs(); renderChapters(); }
 function resetToChapters() { state.chapter = null; state.concept = null; $('#emptyState').hidden = false; $('#lessonView').hidden = true; }
 function renderChapters() {
   const subject = subjectById(state.subject), chapters = chaptersFor(state.subject, state.grade), label = gradeLabel(state.grade);
