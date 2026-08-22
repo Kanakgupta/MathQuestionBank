@@ -27,72 +27,8 @@ const course = {
   }
 };
 
-const legacyQuestionSets = {
-  4: [
-    [['Round 386,749 to the nearest thousand.', '387,000', '386,000', '390,000', '380,000'], ['Find 48,376 + 25,849.', '74,225', '73,225', '74,215', '75,225'], ['Find 82,503 - 37,628.', '44,875', '45,875', '44,985', '45,985']],
-    [['Use an area model: 23 × 4 = ?', '92', '72', '84', '96'], ['Find 1,426 × 3.', '4,278', '4,238', '4,168', '3,278'], ['Find 24 × 13.', '312', '272', '302', '322']],
-    [['What is 864 ÷ 4?', '216', '206', '226', '196'], ['What is the remainder in 29 ÷ 6?', '5', '4', '6', '3'], ['How many vans of 6 seats are needed for 29 students?', '5', '4', '6', '29']],
-    [['Solve n + 36 = 91.', '55', '127', '65', '45'], ['A shop has 6 boxes of 24 pencils and gives away 17. How many remain?', '127', '137', '117', '121'], ['Which number is prime?', '29', '21', '27', '33']],
-    [['Convert 4 feet to inches.', '48', '16', '40', '400'], ['A 7 m by 4 m garden has what area?', '28 square m', '22 m', '11 square m', '56 square m'], ['Convert 3 kilograms to grams.', '3,000', '300', '30', '30,000']],
-    [['Which fraction is equivalent to 1/2?', '2/4', '1/4', '3/4', '2/3'], ['What is 3/8 + 2/8?', '5/8', '5/16', '1/8', '6/8'], ['What is 7/10 - 3/10?', '4/10', '4/20', '10/10', '3/7']],
-    [['What is 3 × 2/5?', '6/5', '6/10', '5/6', '2/15'], ['Write 7/10 as a decimal.', '0.7', '0.07', '7.0', '0.70'], ['Which is greater?', '0.75', '0.7', 'They are equal', 'Cannot tell']],
-    [['Which has exactly one endpoint?', 'Ray', 'Line', 'Line segment', 'Parallel lines'], ['Classify a 120° angle.', 'Obtuse', 'Acute', 'Right', 'Straight'], ['How many lines of symmetry does a square have?', '4', '1', '2', '0']]
-  ],
-  5: [
-    [['Four boxes have 7 books each. How many books?', '28', '11', '24', '35'], ['Evaluate (8 + 2) × 5.', '50', '18', '20', '40'], ['Which is a factor of 24?', '6', '5', '7', '11']],
-    [['A 6 by 4 rectangle has what perimeter?', '20', '24', '10', '48'], ['A 6 by 4 rectangle has what area?', '24 square units', '20 units', '10 square units', '48 square units'], ['Area is 35 square units and width is 5. Length?', '7', '30', '40', '175']],
-    [['Find 47,891 + 23,109.', '71,000', '70,000', '71,100', '70,100'], ['Find 90,000 - 31,000.', '59,000', '61,000', '69,000', '49,000'], ['Find 3.40 + 0.65.', '4.05', '3.105', '3.95', '4.50']],
-    [['What type is a 45° angle?', 'Acute', 'Right', 'Obtuse', 'Straight'], ['A straight line totals how many degrees?', '180', '90', '360', '100'], ['How many sides does a hexagon have?', '6', '5', '7', '8']],
-    [['Which is equivalent to 1/3?', '2/6', '2/3', '3/6', '1/6'], ['Find 1/3 + 1/6.', '1/2', '2/9', '2/6', '1/9'], ['Find 3/4 - 1/4.', '1/2', '2/4', '3/8', '1/4']],
-    [['What is the volume of 4 × 3 × 2 prism?', '24 cubic units', '9 square units', '12 units', '24 square units'], ['Convert 3 feet to inches.', '36', '9', '30', '300'], ['12 cubes per layer × 3 layers = ?', '36 cubic units', '15 cubic units', '9 cubic units', '24 cubic units']],
-    [['What is |-5|?', '5', '-5', '0', '10'], ['Which quadrant contains (3, -2)?', 'IV', 'I', 'II', 'III'], ['What is the x-coordinate in (3, -2)?', '3', '-2', '1', '5']],
-    [['Find 3/4 × 4.', '3', '3/16', '7/4', '1'], ['Find 864 ÷ 7.', '123 R 3', '124 R 2', '123 R 1', '122 R 4'], ['Find 2.4 ÷ 0.3.', '8', '0.8', '80', '0.08']]
-  ]
-};
-
-function strategyQuestion(concept, chapterName, number) {
-  const prompts = [
-    [`Which idea is most useful for a ${concept.toLowerCase()} challenge in ${chapterName}?`, 'Use the model and match each number to its place or part.', 'Guess before reading the question.', 'Change every number to zero.', 'Use a different operation without checking.'],
-    [`Before solving a ${concept.toLowerCase()} problem, what should you do first?`, 'Read what the problem is asking and identify the important numbers.', 'Choose the longest answer.', 'Skip the model.', 'Start with the final answer.'],
-    [`Which habit helps you check work on ${concept.toLowerCase()}?`, 'Use an estimate or a related operation to see whether the answer makes sense.', 'Always pick the largest number.', 'Erase the equation.', 'Ignore units and labels.'],
-    [`A classmate is stuck on ${concept.toLowerCase()}. What is the best next step?`, 'Draw or use the chapter model to organize the math idea.', 'Give up after one try.', 'Pick an answer at random.', 'Write a new unrelated question.'],
-    [`Which statement about ${concept.toLowerCase()} is true?`, 'A clear model can show how the numbers and operations are connected.', 'The answer never needs checking.', 'All problems use the same operation.', 'Units are never important.'],
-    [`What should a strong math explanation include for ${concept.toLowerCase()}?`, 'The operation or model used and why it gives the answer.', 'Only the answer with no work.', 'A different topic.', 'A list of random numbers.'],
-    [`After you solve a ${concept.toLowerCase()} problem, what is a smart final check?`, 'Ask whether the result is reasonable for the situation.', 'Make the answer much larger.', 'Delete the units.', 'Never look at the question again.'],
-    [`What should you label in a ${concept.toLowerCase()} word problem?`, 'The units and what the final number means.', 'Only the largest digit.', 'A random title.', 'Nothing at all.'],
-    [`Which tool can help you organize a ${concept.toLowerCase()} idea?`, 'A drawing, table, number line, or model that matches the problem.', 'A blank page with no work.', 'An unrelated formula.', 'A guess written in pencil.'],
-    [`When should you slow down in a ${concept.toLowerCase()} problem?`, 'When a step changes the size, unit, or place value of a number.', 'Never; speed is the only goal.', 'Only after choosing an answer.', 'When the problem has a short sentence.'],
-    [`What makes an answer believable in ${concept.toLowerCase()}?`, 'It agrees with the model and is reasonable when estimated.', 'It has the most digits.', 'It is always an even number.', 'It matches a classmate’s guess.'],
-    [`If your first ${concept.toLowerCase()} answer looks strange, what should you do?`, 'Return to the model and check each step in order.', 'Keep it without checking.', 'Choose a new operation randomly.', 'Delete the question.']
-  ];
-  const item = [...prompts[number]];
-  item.concept = number % 3;
-  return item;
-}
-
-const seedConceptMaps = {
-  4: [[1, 2, 2], [0, 1, 2], [0, 1, 2], [1, 0, 2], [0, 2, 1], [0, 1, 2], [0, 1, 2], [0, 1, 2]],
-  5: [[0, 1, 2], [0, 1, 1], [0, 0, 1], [0, 1, 2], [0, 1, 2], [0, 1, 2], [1, 1, 1], [0, 1, 2]]
-};
-
-function expandQuestionSets(seeds) {
-  const expanded = {};
-  for (const [grade, chapters] of Object.entries(seeds)) {
-    expanded[grade] = chapters.map((questions, chapterIndex) => {
-      const chapter = course[grade].chapters[chapterIndex];
-      const calculationQuestions = questions.map((question, index) => {
-        const copy = [...question];
-        copy.concept = seedConceptMaps[grade][chapterIndex][index];
-        return copy;
-      });
-      const strategyQuestions = Array.from({ length: 7 }, (_, index) => strategyQuestion(chapter[1][index % 3], chapter[0], index));
-      return [...calculationQuestions, ...strategyQuestions];
-    });
-  }
-  return expanded;
-}
-
-const questionSets = expandQuestionSets(legacyQuestionSets);
+const LEVEL_NAMES = ['Easy', 'Medium', 'Hard', 'Expert'];
+function levelForIndex(index) { return LEVEL_NAMES[Math.min(3, Math.floor(index / 5))]; }
 const placeValueQuestions = [
   ['In 582,641, what is the value of the 8?', '80,000', '8,000', '800,000', '800'],
   ['Which number has 7 in the ten-thousands place?', '472,315', '427,315', '427,135', '42,731'],
@@ -103,7 +39,17 @@ const placeValueQuestions = [
   ['In 731,458, the 1 has what value?', '1,000', '100', '10,000', '1'],
   ['What number is 9 hundred-thousands, 2 thousands, and 6 ones?', '902,006', '920,006', '902,060', '900,206'],
   ['Which comparison is true?', '498,201 > 489,999', '498,201 < 489,999', '498,201 = 489,999', '498,201 > 498,210'],
-  ['A digit moves from the thousands place to the ten-thousands place. Its value becomes how many times greater?', '10 times', '2 times', '100 times', '1/10 as great']
+  ['A digit moves from the thousands place to the ten-thousands place. Its value becomes how many times greater?', '10 times', '2 times', '100 times', '1/10 as great'],
+  ['What digit is in the ten-thousands place in 273,845?', '7', '2', '3', '8'],
+  ['Which number equals 500,000 + 30,000 + 2,000 + 400 + 60 + 7?', '532,467', '532,647', '523,467', '532,476'],
+  ['Which of these numbers is greatest?', '245,768', '245,678', '245,687', '245,786'],
+  ['Which number is between 450,000 and 460,000?', '455,321', '460,001', '449,999', '461,000'],
+  ['In 888,888, what is the value of the 8 in the hundred-thousands place?', '800,000', '80,000', '8,000', '8'],
+  ['What is the standard form of 6 hundred-thousands, 4 thousands, 9 hundreds, and 2 ones?', '604,902', '640,902', '604,920', '649,020'],
+  ['In 3,456,789, what is the value of the 3?', '3,000,000', '300,000', '30,000', '3,000'],
+  ['Which number has an 8 in the millions place?', '8,432,109', '4,832,109', '1,489,320', '4,238,109'],
+  ['What is the value of the 5 in 5,672,410?', '5,000,000', '500,000', '50,000', '5,000'],
+  ['Which number is read “four million, two hundred six thousand, eleven”?', '4,206,011', '4,260,011', '4,026,011', '4,206,110']
 ];
 const roundingQuestions = [
   ['Round 386,499 to the nearest thousand.', '386,000', '387,000', '386,500', '385,000'],
@@ -115,8 +61,284 @@ const roundingQuestions = [
   ['Round 641,204 to the nearest ten thousand.', '640,000', '650,000', '641,000', '600,000'],
   ['Round 645,204 to the nearest ten thousand.', '650,000', '640,000', '645,000', '700,000'],
   ['Round 9,949 to the nearest thousand.', '10,000', '9,000', '9,900', '11,000'],
-  ['Which number rounds to 50,000 when rounded to the nearest ten thousand?', '46,200', '44,999', '55,100', '39,800']
+  ['Which number rounds to 50,000 when rounded to the nearest ten thousand?', '46,200', '44,999', '55,100', '39,800'],
+  ['Round 4,382,910 to the nearest million.', '4,000,000', '5,000,000', '4,500,000', '4,300,000'],
+  ['Round 27 to the nearest ten.', '30', '20', '25', '40'],
+  ['Round 84 to the nearest ten.', '80', '90', '85', '70'],
+  ['Round 715,499 to the nearest ten thousand.', '720,000', '710,000', '715,000', '700,000'],
+  ['Round 715,500 to the nearest ten thousand.', '720,000', '710,000', '715,000', '725,000'],
+  ['Which number rounds to 200,000 when rounded to the nearest hundred thousand?', '162,340', '149,000', '251,000', '99,999'],
+  ['Round 999,650 to the nearest thousand.', '1,000,000', '999,000', '999,600', '1,000,650'],
+  ['Round 45,050 to the nearest hundred.', '45,100', '45,000', '45,050', '44,900'],
+  ['Which number rounds to 300,000 when rounded to the nearest hundred thousand?', '340,000', '150,000', '449,999', '199,999'],
+  ['Round 3,499,999 to the nearest million.', '3,000,000', '4,000,000', '3,500,000', '3,499,000']
 ];
+function fracStr(numerator, denominator) { return `${numerator}/${denominator}`; }
+const conceptQuestionBank = {
+  'Add & subtract': index => {
+    if (index < 5) { const a = 32 + index * 11, b = 21 + index * 9; return [`Find ${a} + ${b}.`, String(a + b), String(a + b + 10), String(a + b - 10), String(a + b + 1)]; }
+    if (index < 10) { const t = index - 5, a = 246 + t * 57, b = 175 + t * 41; return [`Find ${a} + ${b}.`, String(a + b), String(a + b + 100), String(a + b - 100), String(a + b + 11)]; }
+    if (index < 15) { const t = index - 10, a = 604 + t * 63, b = 258 + t * 37; return [`Find ${a} - ${b}.`, String(a - b), String(a - b + 10), String(a - b - 10), String(a - b + 100)]; }
+    const t = index - 15, a = 4200 + t * 173, b = 1385 + t * 97; return [`Find ${a} - ${b}.`, String(a - b), String(a - b + 10), String(a - b - 10), String(a - b + 100)];
+  },
+  'Arrays': index => {
+    if (index < 5) { const rows = 2 + index, cols = 3 + index; return [`How many dots in ${rows} rows of ${cols}?`, String(rows * cols), String(rows * cols + rows), String(rows * cols - cols), String(rows + cols)]; }
+    if (index < 10) { const t = index - 5, rows = 4 + t, cols = 6 + t; return [`How many dots in ${rows} rows of ${cols}?`, String(rows * cols), String(rows * cols + 2), String(rows * cols - 2), String(rows * (cols - 1))]; }
+    if (index < 15) { const t = index - 10, groups = 5 + t, each = 8 + t; return [`A garden has ${groups} rows with ${each} plants in each row. How many plants?`, String(groups * each), String(groups * each + each), String(groups * each - groups), String(groups + each)]; }
+    const t = index - 15, groups = 7 + t, each = 12 + t; return [`A stadium has ${groups} sections with ${each} seats in each section. How many seats?`, String(groups * each), String(groups * each + 10), String(groups * each - 10), String((groups - 1) * each)];
+  },
+  'Area models': index => {
+    if (index < 5) { const a = 20 + index, b = 3 + index; const partA = a * b, wholeA = a + 1; return [`Use an area model to find ${a} × ${b}.`, String(a * b), String(a * b + b), String(a * b - a), String((a - 1) * b)]; }
+    if (index < 10) { const t = index - 5, a = 32 + t * 3, b = 4 + t; return [`Use an area model: ${a} × ${b} = ?`, String(a * b), String(a * b + a), String(a * b - b), String(a * b + b)]; }
+    if (index < 15) { const t = index - 10, a = 24 + t, b = 12 + t; return [`Find ${a} × ${b} using an area model.`, String(a * b), String(a * b + 10), String(a * b - 10), String((a + 1) * b)]; }
+    const t = index - 15, a = 234 + t * 11, b = 4 + Math.floor(t / 2); return [`Use an area model to find ${a} × ${b}.`, String(a * b), String(a * b + 100), String(a * b - 100), String(a * b + 10)];
+  },
+  'Multi-digit products': index => {
+    if (index < 5) { const a = 213 + index * 21, b = 2 + (index % 3); return [`Find ${a} × ${b}.`, String(a * b), String(a * b + 10), String(a * b - 10), String(a * b + 100)]; }
+    if (index < 10) { const t = index - 5, a = 1046 + t * 83, b = 3 + (t % 4); return [`Find ${a} × ${b}.`, String(a * b), String(a * b + 100), String(a * b - 100), String(a * b + 1000)]; }
+    if (index < 15) { const t = index - 10, a = 14 + t, b = 12 + t; return [`Find ${a} × ${b}.`, String(a * b), String(a * b + 10), String(a * b - 10), String((a + 1) * b)]; }
+    const t = index - 15, a = 312 + t * 17, b = 13 + (t % 5); return [`Find ${a} × ${b}.`, String(a * b), String(a * b + 100), String(a * b - 100), String(a * b + 10)];
+  },
+  'Equal groups': index => {
+    if (index < 5) { const groups = 2 + index, quotient = 3 + index; const total = groups * quotient; return [`${total} shared equally into ${groups} groups. How many in each group?`, String(quotient), String(quotient + 1), String(quotient - 1), String(total)]; }
+    if (index < 10) { const t = index - 5, groups = 4 + t, quotient = 6 + t; const total = groups * quotient; return [`${total} divided by ${groups} = ?`, String(quotient), String(quotient + 2), String(quotient - 2), String(quotient + 5)]; }
+    if (index < 15) { const t = index - 10, groups = 5 + t, quotient = 12 + t, remainder = 1 + (t % 3); const total = groups * quotient + remainder; const altRemainder = remainder > 1 ? remainder - 1 : remainder + 3; return [`${total} shared into ${groups} equal groups leaves what remainder?`, String(remainder), String(remainder + 2), String(altRemainder), String(quotient)]; }
+    const t = index - 15, groups = 6 + t; const quotient = 15 + t; const total = groups * quotient; return [`A dividend of ${total} and divisor of ${groups} gives what quotient?`, String(quotient), String(quotient + 3), String(quotient - 3), String(total - groups)];
+  },
+  'Long division': index => {
+    if (index < 5) { const divisor = 2 + index, quotient = 11 + index; const dividend = divisor * quotient; return [`Find ${dividend} ÷ ${divisor}.`, String(quotient), String(quotient + 1), String(quotient - 1), String(dividend)]; }
+    if (index < 10) { const t = index - 5, divisor = 3 + t, quotient = 84 + t * 7; const dividend = divisor * quotient; return [`Find ${dividend} ÷ ${divisor}.`, String(quotient), String(quotient + 2), String(quotient - 2), String(quotient + 10)]; }
+    if (index < 15) { const t = index - 10, divisor = 4 + t, quotient = 122 + t * 6, remainder = 1 + (t % 3); const dividend = divisor * quotient + remainder; return [`Find ${dividend} ÷ ${divisor}. Give the quotient and remainder.`, `${quotient} R ${remainder}`, `${quotient - 1} R ${remainder}`, `${quotient} R ${remainder + 1}`, `${quotient + 1} R ${remainder}`]; }
+    const t = index - 15, divisor = 6 + t, quotient = 1204 + t * 33, remainder = 2 + (t % 4); const dividend = divisor * quotient + remainder; return [`Find ${dividend} ÷ ${divisor}. Give the quotient and remainder.`, `${quotient} R ${remainder}`, `${quotient - 1} R ${remainder}`, `${quotient} R ${remainder + 1}`, `${quotient + 1} R ${remainder}`];
+  },
+  'Remainders': index => {
+    if (index < 5) { const divisor = 4 + index, quotient = 3 + index, remainder = 1 + (index % (divisor - 1)); const dividend = divisor * quotient + remainder; return [`What is the remainder in ${dividend} ÷ ${divisor}?`, String(remainder), String(remainder + 1), String(divisor), String(quotient)]; }
+    if (index < 10) { const t = index - 5, divisor = 6 + t, quotient = 9 + t, remainder = 2 + (t % (divisor - 1)); const dividend = divisor * quotient + remainder; return [`What is the remainder in ${dividend} ÷ ${divisor}?`, String(remainder), String(remainder + 2), String(divisor - 1), String(quotient)]; }
+    if (index < 15) { const t = index - 10, seats = 6 + t, students = seats * (3 + t) + 1 + (t % (seats - 1)); const vans = Math.ceil(students / seats); return [`${students} students ride in vans holding ${seats} each. How many vans are needed?`, String(vans), String(vans - 1), String(vans + 1), String(seats)]; }
+    const t = index - 15, pieces = 6 + t, friends = 4 + t, remainder = pieces % friends, quotient = Math.floor(pieces / friends), altRemainder = remainder + 1 === friends ? remainder - 1 : remainder + 1; return [`${pieces} candies are shared evenly among ${friends} friends. How many candies are left over?`, String(remainder), String(altRemainder), String(friends), String(quotient)];
+  },
+  'Multi-step plans': index => {
+    if (index < 5) { const a = 3 + index, b = 4 + index, c = 2 + index; const result = a * b + c; return [`Find ${a} × ${b}, then add ${c}.`, String(result), String(a * b), String(result + 1), String(result - 1)]; }
+    if (index < 10) { const t = index - 5, a = 5 + t, b = 6 + t, c = 3 + t; const result = a * b - c; return [`Find ${a} × ${b}, then subtract ${c}.`, String(result), String(a * b), String(result + 1), String(result - 1)]; }
+    if (index < 15) { const t = index - 10, a = 12 + t, b = 8 + t, c = 4; const result = (a + b) / c; return Number.isInteger(result) ? [`Add ${a} and ${b}, then divide by ${c}.`, String(result), String(result + 1), String(result - 1), String(a + b)] : [`Add ${a} and ${b + 1}, then divide by ${c}.`, String((a + b + 1) / c), String((a + b + 1) / c + 1), String((a + b + 1) / c - 1), String(a + b + 1)]; }
+    const t = index - 15, boxes = 6 + t, each = 24 + t, given = 15 + t; const result = boxes * each - given; return [`${boxes} boxes hold ${each} pencils each. ${given} pencils are given away. How many remain?`, String(result), String(boxes * each), String(result + 10), String(result - 10)];
+  },
+  'Variables': index => {
+    if (index < 5) { const n = 12 + index * 3, total = n + (18 + index * 2); return [`Solve n + ${18 + index * 2} = ${total}.`, String(n), String(n + 2), String(n - 2), String(total)]; }
+    if (index < 10) { const t = index - 5, n = 20 + t * 4, sub = 9 + t * 2, total = n - sub; return [`Solve n - ${sub} = ${total}.`, String(n), String(n + 2), String(n - 2), String(total)]; }
+    if (index < 15) { const t = index - 10, factor = 3 + t, n = 6 + t * 2, total = factor * n; return [`Solve ${factor}n = ${total}.`, String(n), String(n + 1), String(n - 1), String(factor)]; }
+    const t = index - 15, factor = 2 + t, n = 5 + t, extra = 4 + t, total = factor * n + extra; return [`Solve ${factor}n + ${extra} = ${total}.`, String(n), String(n + 1), String(n - 1), String(total)];
+  },
+  'Factors': index => {
+    if (index < 5) { const values = [12, 18, 20, 24, 30]; const value = values[index]; const factors = [...Array(value).keys()].map(n => n + 1).filter(n => value % n === 0); return [`How many factors does ${value} have?`, String(factors.length), String(factors.length + 1), String(factors.length - 1), String(value)]; }
+    if (index < 10) { const values = [15, 21, 27, 33, 45]; const value = values[index - 5]; const factors = [...Array(value).keys()].map(n => n + 1).filter(n => value % n === 0); const isPrime = factors.length === 2; return [`Is ${value} prime or composite?`, isPrime ? 'Prime' : 'Composite', isPrime ? 'Composite' : 'Prime', 'Neither', 'Both']; }
+    if (index < 15) { const values = [36, 40, 48, 54, 60]; const value = values[index - 10]; const half = value / 2; return [`Which number is NOT a factor of ${value}?`, String(half + 1), '1', String(value), String(half)]; }
+    const values = [72, 84, 96, 108, 120]; const value = values[index - 15]; const factorPair = value / 4; return [`What is the missing factor: 4 × ? = ${value}?`, String(factorPair), String(factorPair + 1), String(factorPair - 1), '4'];
+  },
+  'Unit conversions': index => {
+    if (index < 5) { const feet = 2 + index; return [`Convert ${feet} feet to inches.`, String(feet * 12), String(feet * 12 + 12), String(feet * 12 - 12), String(feet)]; }
+    if (index < 10) { const t = index - 5, yards = 3 + t; return [`Convert ${yards} yards to feet.`, String(yards * 3), String(yards * 3 + 3), String(yards * 3 - 3), String(yards)]; }
+    if (index < 15) { const t = index - 10, pounds = 2 + t; return [`Convert ${pounds} pounds to ounces.`, String(pounds * 16), String(pounds * 16 + 16), String(pounds * 16 - 16), String(pounds)]; }
+    const t = index - 15, feet = 3 + t; return [`Convert ${feet} feet to inches, then add 5 inches.`, String(feet * 12 + 5), String(feet * 12), String(feet * 12 + 15), String(feet * 12 - 5)];
+  },
+  'Time and volume': index => {
+    if (index < 5) { const minutes = 2 + index; return [`Convert ${minutes} minutes to seconds.`, String(minutes * 60), String(minutes * 60 + 60), String(minutes * 60 - 60), String(minutes)]; }
+    if (index < 10) { const t = index - 5, kilograms = 2 + t; return [`Convert ${kilograms} kilograms to grams.`, String(kilograms * 1000), String(kilograms * 1000 + 1000), String(kilograms * 1000 - 1000), String(kilograms)]; }
+    if (index < 15) { const t = index - 10, gallons = 2 + t; return [`Convert ${gallons} gallons to quarts.`, String(gallons * 4), String(gallons * 4 + 4), String(gallons * 4 - 4), String(gallons)]; }
+    const t = index - 15, hours = 2 + t; return [`Convert ${hours} hours to minutes, then subtract 15 minutes.`, String(hours * 60 - 15), String(hours * 60), String(hours * 60 + 15), String(hours * 60 - 30)];
+  },
+  'Area & perimeter': index => {
+    if (index < 5) { const l = 4 + index, w = 3 + index; return [`Find the area of a ${l} by ${w} rectangle.`, String(l * w), String(2 * (l + w)), String(l * w + w), String(l + w)]; }
+    if (index < 10) { const t = index - 5, l = 6 + t, w = 4 + t; return [`Find the perimeter of a ${l} by ${w} rectangle.`, String(2 * (l + w)), String(l * w), String(l + w), String(2 * (l + w) + 2)]; }
+    if (index < 15) { const t = index - 10, area = (8 + t) * 4, width = 4; return [`Area is ${area} square meters and width is ${width} meters. What is the length?`, String(area / width), String(area / width + 1), String(area / width - 1), String(area)]; }
+    const t = index - 15, l = 9 + t, w = 5 + t; return [`A garden is ${l} m by ${w} m. Find its area and perimeter combined (area + perimeter).`, String(l * w + 2 * (l + w)), String(l * w), String(2 * (l + w)), String(l * w - 2 * (l + w))];
+  },
+  'Equivalent fractions': index => {
+    const bases = [[1, 2], [2, 3], [3, 4], [1, 3], [2, 5]];
+    if (index < 5) { const [n, d] = bases[index]; return [`Write an equivalent fraction for ${fracStr(n, d)} with denominator ${d * 2}.`, fracStr(n * 2, d * 2), fracStr(n * 2 + 1, d * 2), fracStr(n * 2, d * 2 + 2), fracStr(n, d * 2)]; }
+    if (index < 10) { const [n, d] = bases[index - 5]; return [`Write an equivalent fraction for ${fracStr(n, d)} with denominator ${d * 3}.`, fracStr(n * 3, d * 3), fracStr(n * 3 + 1, d * 3), fracStr(n * 3, d * 3 + 3), fracStr(n, d * 3)]; }
+    if (index < 15) { const pairs = [[4, 8], [6, 9], [8, 12], [10, 15], [6, 8]]; const [n, d] = pairs[index - 10]; const gcd = (a, b) => b === 0 ? a : gcd(b, a % b); const divisor = gcd(n, d); const simpleN = n / divisor, simpleD = d / divisor; return [`Simplify ${fracStr(n, d)}.`, fracStr(simpleN, simpleD), fracStr(simpleN + 1, simpleD), fracStr(simpleN, simpleD + 1), fracStr(n, d)]; }
+    const comparisons = [[[1, 2], [3, 6]], [[2, 3], [6, 9]], [[3, 4], [9, 12]], [[1, 3], [4, 12]], [[2, 5], [6, 15]]]; const [[an, ad], [bn, bd]] = comparisons[index - 15]; return [`Are ${fracStr(an, ad)} and ${fracStr(bn, bd)} equivalent?`, 'Yes', 'No', 'Only sometimes', 'Cannot tell'];
+  },
+  'Adding fractions': index => {
+    if (index < 5) { const d = 8, a = 1 + index, b = 2 + index; return [`Find ${fracStr(a, d)} + ${fracStr(b, d)}.`, fracStr(a + b, d), fracStr(a + b + 1, d), fracStr(a + b, d + 1), fracStr(a, d)]; }
+    if (index < 10) { const t = index - 5, d = 10, a = 2 + t, b = 3 + t; return [`Find ${fracStr(a, d)} + ${fracStr(b, d)}.`, fracStr(a + b, d), fracStr(a + b + 1, d), fracStr(a + b, d + 1), fracStr(b, d)]; }
+    if (index < 15) { const t = index - 10, d = 6, a = 3 + (t % 3), b = 4 + (t % 2); const sum = a + b; return sum > d ? [`Find ${fracStr(a, d)} + ${fracStr(b, d)}. Write as a mixed number.`, `1 ${fracStr(sum - d, d)}`, fracStr(sum, d), `1 ${fracStr(sum - d + 1, d)}`, fracStr(sum - d, d)] : [`Find ${fracStr(a, d)} + ${fracStr(b, d)}.`, fracStr(sum, d), fracStr(sum + 1, d), fracStr(sum, d + 1), fracStr(a, d)]; }
+    const t = index - 15, d = 12, a = 5 + t, b = 5 + t; const sum = a + b; return [`Find ${fracStr(a, d)} + ${fracStr(b, d)}. Write as a mixed number.`, `1 ${fracStr(sum - d, d)}`, fracStr(sum, d), `1 ${fracStr(sum - d + 1, d)}`, fracStr(sum - d, d)];
+  },
+  'Subtracting fractions': index => {
+    if (index < 5) { const d = 8, a = 5 + index % 3, b = 1 + index % 2; return [`Find ${fracStr(a, d)} - ${fracStr(b, d)}.`, fracStr(a - b, d), fracStr(a - b + 1, d), fracStr(a - b, d + 1), fracStr(b, d)]; }
+    if (index < 10) { const t = index - 5, d = 10, a = 7 + (t % 3), b = 2 + (t % 4); return [`Find ${fracStr(a, d)} - ${fracStr(b, d)}.`, fracStr(a - b, d), fracStr(a - b - 1, d), fracStr(a - b, d + 1), fracStr(a + 1, d)]; }
+    if (index < 15) { const t = index - 10, d = 6 + t * 2, sub = 1 + t; return [`Find 1 - ${fracStr(sub, d)}.`, fracStr(d - sub, d), fracStr(d - sub - 1, d), fracStr(d - sub + 1, d), fracStr(sub, d)]; }
+    const t = index - 15, d = 12, a = 11 - t, b = 2 + t; return [`Find ${fracStr(a, d)} - ${fracStr(b, d)}.`, fracStr(a - b, d), fracStr(a - b + 1, d), fracStr(a - b - 1, d), fracStr(a, d)];
+  },
+  'Fraction groups': index => {
+    if (index < 5) { const whole = 2 + index, d = 3; const top = whole; return [`Find ${whole} × ${fracStr(1, d)}.`, fracStr(top, d), fracStr(top + 1, d), fracStr(top, d + 1), String(whole)]; }
+    if (index < 10) { const t = index - 5, whole = 3 + t, n = 2, d = 5; const top = whole * n; return [`Find ${whole} × ${fracStr(n, d)}.`, fracStr(top, d), fracStr(top + 1, d), fracStr(top, d + 1), String(whole)]; }
+    if (index < 15) { const t = index - 10, whole = 3 + t, n = 2, d = 3; const top = whole * n; const wholes = Math.floor(top / d), remainder = top - wholes * d; const correct = remainder ? `${wholes} ${fracStr(remainder, d)}` : String(wholes); return remainder ? [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes), `${wholes + 1} ${fracStr(remainder, d)}`, fracStr(top, d)] : [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes + 1), String(wholes - 1), fracStr(top, d)]; }
+    const t = index - 15, whole = 4 + t, n = 3, d = 4; const top = whole * n; const wholes = Math.floor(top / d), remainder = top - wholes * d; const correct = remainder ? `${wholes} ${fracStr(remainder, d)}` : String(wholes); return remainder ? [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes), `${wholes + 1} ${fracStr(remainder, d)}`, fracStr(top, d)] : [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes + 1), String(wholes - 1), fracStr(top, d)];
+  },
+  'Tenths & hundredths': index => {
+    if (index < 5) { const tenths = 1 + index; return [`Write ${fracStr(tenths, 10)} as a decimal.`, (tenths / 10).toFixed(1), (tenths / 10 + 0.1).toFixed(1), tenths + '.0', '0.0' + tenths]; }
+    if (index < 10) { const t = index - 5, hundredths = 12 + t * 7; return [`Write ${fracStr(hundredths, 100)} as a decimal.`, (hundredths / 100).toFixed(2), (hundredths / 100 + 0.01).toFixed(2), (hundredths / 100 - 0.01).toFixed(2), (hundredths / 100 + 0.1).toFixed(2)]; }
+    if (index < 15) { const t = index - 10, tenths = 3 + t; const decimal = (tenths / 10).toFixed(1); return [`Write ${decimal} as a fraction.`, fracStr(tenths, 10), fracStr(tenths, 100), fracStr(tenths + 1, 10), fracStr(tenths - 1, 10)]; }
+    const t = index - 15, hundredths = 15 + t * 6; const decimal = (hundredths / 100).toFixed(2); return [`Write ${decimal} as a fraction.`, fracStr(hundredths, 100), fracStr(hundredths, 10), fracStr(hundredths + 1, 100), fracStr(hundredths - 1, 100)];
+  },
+  'Compare decimals': index => {
+    if (index < 5) { const a = (0.5 + index * 0.1).toFixed(1), b = (0.3 + index * 0.1).toFixed(1); return [`Compare ${a} and ${b}. Use <, >, or =.`, '>', '<', '=', 'Cannot tell']; }
+    if (index < 10) { const t = index - 5, a = '0.' + (6 + t), b = '0.' + (6 + t) + '0'; return [`Compare ${a} and ${b}. Use <, >, or =.`, '=', '<', '>', 'Cannot tell']; }
+    if (index < 15) { const t = index - 10; return [`Compare 0.6 and 0.0${6 + t}. Use <, >, or =.`, '>', '<', '=', 'Cannot tell']; }
+    const t = index - 15; return [`Compare ${fracStr(3, 4)} and 0.${70 + t}. Use <, >, or =.`, (0.75 > (70 + t) / 100) ? '>' : (0.75 < (70 + t) / 100 ? '<' : '='), (0.75 > (70 + t) / 100) ? '<' : '>', '=', 'Cannot tell'];
+  },
+  'Lines': index => {
+    const tiers = [
+      ['Which figure has two endpoints?', 'Line segment', 'Ray', 'Line', 'Angle'],
+      ['Which figure has exactly one endpoint?', 'Ray', 'Line segment', 'Line', 'Angle'],
+      ['Which figure continues forever in both directions?', 'Line', 'Ray', 'Line segment', 'Point'],
+      ['Two lines that never meet are called what?', 'Parallel', 'Perpendicular', 'Intersecting', 'Equal'],
+      ['Two lines that meet at a right angle are called what?', 'Perpendicular', 'Parallel', 'Curved', 'Equal'],
+      ['A ruler’s edge is an example of which figure?', 'Line segment', 'Ray', 'Point', 'Angle'],
+      ['A flashlight beam starting at a bulb is an example of which figure?', 'Ray', 'Line segment', 'Line', 'Point'],
+      ['Railroad tracks are an example of what kind of lines?', 'Parallel', 'Perpendicular', 'Intersecting', 'Curved'],
+      ['The corner of a piece of paper shows what kind of lines?', 'Perpendicular', 'Parallel', 'Curved', 'Equal'],
+      ['A single dot marking a location is called what?', 'Point', 'Line', 'Ray', 'Segment'],
+      ['Which figure is named using two endpoints, like AB?', 'Line segment', 'Ray', 'Line', 'Point'],
+      ['Which figure is named using an endpoint and one other point, like ray AB?', 'Ray', 'Line segment', 'Line', 'Point'],
+      ['Do parallel lines ever cross?', 'No', 'Yes', 'Sometimes', 'Only at the origin'],
+      ['What is the angle formed where two perpendicular lines meet?', '90 degrees', '45 degrees', '180 degrees', '60 degrees'],
+      ['Which word describes lines that cross at any angle other than 90 degrees?', 'Intersecting', 'Parallel', 'Perpendicular', 'Equal'],
+      ['A number line is an example of which figure?', 'Line', 'Line segment', 'Ray', 'Point'],
+      ['Two rays that share an endpoint form what figure?', 'Angle', 'Line', 'Segment', 'Point'],
+      ['Which figure would you draw with only a start and stop point, no arrows?', 'Line segment', 'Ray', 'Line', 'Angle'],
+      ['If two lines are not parallel and not perpendicular, but still cross, what are they called?', 'Intersecting', 'Parallel', 'Perpendicular', 'Curved'],
+      ['A tabletop edge meeting a table leg at a square corner shows what?', 'Perpendicular lines', 'Parallel lines', 'Intersecting curves', 'A single ray']
+    ];
+    return tiers[index];
+  },
+  'Angles': index => {
+    const angles = [20, 45, 60, 89, 90, 91, 120, 150, 179, 180, 15, 75, 88, 92, 135, 170, 30, 55, 95, 160];
+    const angle = angles[index % angles.length];
+    const kind = angle < 90 ? 'Acute' : angle === 90 ? 'Right' : angle < 180 ? 'Obtuse' : 'Straight';
+    const others = ['Acute', 'Right', 'Obtuse', 'Straight'].filter(item => item !== kind);
+    return [`Classify a ${angle}° angle.`, kind, others[0], others[1], others[2]];
+  },
+  'Symmetry': index => {
+    const shapes = [['square', 4], ['rectangle', 2], ['isosceles triangle', 1], ['scalene triangle', 0], ['regular hexagon', 6], ['regular pentagon', 5], ['rhombus', 2], ['regular octagon', 8], ['kite', 1], ['parallelogram', 0], ['equilateral triangle', 3], ['regular heptagon', 7], ['regular nonagon', 9], ['regular decagon', 10], ['right triangle', 0], ['isosceles trapezoid', 1], ['scalene trapezoid', 0], ['regular 12-gon', 12], ['oval (ellipse)', 2], ['regular 5-pointed star', 5]];
+    const [shape, lines] = shapes[index];
+    const wrongs = lines === 0 ? [1, 2, 3] : [lines + 1, lines - 1, lines + 2];
+    return [`How many lines of symmetry does a ${shape} have?`, String(lines), ...wrongs.map(String)];
+  },
+  'Expressions': index => {
+    if (index < 5) { const a = 4 + index, b = 2 + index, c = 3; return [`Evaluate (${a} + ${b}) × ${c}.`, String((a + b) * c), String(a + b * c), String(a * b * c), String(a + b + c)]; }
+    if (index < 10) { const t = index - 5, a = 3 + t, b = 2, c = 5 + t; return [`Evaluate ${a} + ${b} × ${c}.`, String(a + b * c), String((a + b) * c), String(a * b + c), String(a + b + c)]; }
+    if (index < 15) { const t = index - 10, a = 10 + t, b = 3 + t, c = 2; return [`Evaluate (${a} - ${b}) × ${c}.`, String((a - b) * c), String(a - b * c), String((a + b) * c), String(a - b - c)]; }
+    const t = index - 15, a = 3 + t, b = 4 + t, c = 2, d = 5; return [`Evaluate ${a} × (${b} + ${c}) - ${d}.`, String(a * (b + c) - d), String(a * b + c - d), String(a * (b + c) + d), String(a * b + c)];
+  },
+  'Perimeter': index => {
+    if (index < 5) { const l = 5 + index, w = 3 + index; return [`Find the perimeter of a ${l} by ${w} rectangle.`, String(2 * (l + w)), String(l * w), String(l + w), String(2 * (l + w) + 1)]; }
+    if (index < 10) { const t = index - 5, side = 5 + t; return [`Find the perimeter of a square with side ${side}.`, String(4 * side), String(side * side), String(2 * side), String(4 * side + 1)]; }
+    if (index < 15) { const t = index - 10, perimeter = (10 + t) * 2, side = 10 + t; return [`A square has perimeter ${4 * side}. What is the side length?`, String(side), String(side + 1), String(side - 1), String(4 * side)]; }
+    const t = index - 15, sides = [4 + t, 5 + t, 6 + t, 3 + t]; return [`A shape has sides ${sides.join(', ')}. Find its perimeter.`, String(sides.reduce((a, b) => a + b, 0)), String(sides.reduce((a, b) => a + b, 0) + 1), String(Math.max(...sides)), String(sides.reduce((a, b) => a + b, 0) - 1)];
+  },
+  'Area': index => {
+    if (index < 5) { const l = 5 + index, w = 3 + index; return [`Find the area of a ${l} by ${w} rectangle.`, String(l * w), String(2 * (l + w)), String(l + w), String(l * w + w)]; }
+    if (index < 10) { const t = index - 5, side = 5 + t; return [`Find the area of a square with side ${side}.`, String(side * side), String(4 * side), String(side + side), String(side * side + side)]; }
+    if (index < 15) { const t = index - 10, l = 6 + t, w = 4 + t, area = l * w; return [`Area is ${area} square units and length is ${l}. Find the width.`, String(w), String(w + 1), String(w - 1), String(area)]; }
+    const t = index - 15, l = 8 + t, w = 6 + t; return [`A rectangle covers ${l * w} square units and has length ${l}. Find the width, then double it.`, String((l * w / l) * 2), String(l * w / l), String(l * w), String(w * 2 + 1)];
+  },
+  'Whole numbers': index => {
+    if (index < 5) { const a = 3421 + index * 512, b = 2109 + index * 341; return [`Find ${a} + ${b}.`, String(a + b), String(a + b + 100), String(a + b - 100), String(a + b + 10)]; }
+    if (index < 10) { const t = index - 5, a = 24680 + t * 913, b = 13579 + t * 621; return [`Find ${a} + ${b}.`, String(a + b), String(a + b + 1000), String(a + b - 1000), String(a + b + 100)]; }
+    if (index < 15) { const t = index - 10, a = 90000 + t * 731, b = 31000 + t * 419; return [`Find ${a} - ${b}.`, String(a - b), String(a - b + 1000), String(a - b - 1000), String(a - b + 100)]; }
+    const t = index - 15, a = 500000 + t * 1123, b = 218000 + t * 647; return [`Find ${a} - ${b}.`, String(a - b), String(a - b + 1000), String(a - b - 1000), String(a - b + 10000)];
+  },
+  'Decimals': index => {
+    if (index < 5) { const a = (1.2 + index * 0.3).toFixed(1), b = (0.5 + index * 0.2).toFixed(1); const sum = (Number(a) + Number(b)).toFixed(1); return [`Find ${a} + ${b}.`, sum, (Number(sum) + 0.1).toFixed(1), (Number(sum) - 0.1).toFixed(1), (Number(sum) + 1).toFixed(1)]; }
+    if (index < 10) { const t = index - 5, a = (3.4 + t * 0.11).toFixed(2), b = (0.65 + t * 0.07).toFixed(2); const sum = (Number(a) + Number(b)).toFixed(2); return [`Find ${a} + ${b}.`, sum, (Number(sum) + 0.01).toFixed(2), (Number(sum) - 0.01).toFixed(2), (Number(sum) + 0.1).toFixed(2)]; }
+    if (index < 15) { const t = index - 10, a = (8.2 + t * 0.15).toFixed(2), b = (1.75 + t * 0.09).toFixed(2); const diff = (Number(a) - Number(b)).toFixed(2); return [`Find ${a} - ${b}.`, diff, (Number(diff) + 0.01).toFixed(2), (Number(diff) - 0.01).toFixed(2), (Number(diff) + 0.1).toFixed(2)]; }
+    const t = index - 15, a = (15.6 + t * 0.21).toFixed(2), b = (4.85 + t * 0.13).toFixed(2); const diff = (Number(a) - Number(b)).toFixed(2); return [`Find ${a} - ${b}.`, diff, (Number(diff) + 0.01).toFixed(2), (Number(diff) - 0.01).toFixed(2), (Number(diff) + 1).toFixed(2)];
+  },
+  'Straight lines': index => {
+    if (index < 5) { const known = 20 + index * 15; return [`Two angles form a straight line. One is ${known}°. What is the other?`, String(180 - known), String(180 - known + 10), String(180 - known - 10), String(known)]; }
+    if (index < 10) { const t = index - 5, known = 32 + t * 13; return [`Two angles form a straight line. One is ${known}°. What is the other?`, String(180 - known), String(180 - known + 5), String(180 - known - 5), String(known)]; }
+    if (index < 15) { const t = index - 10, a = 40 + t * 7, b = 60 + t * 5; return [`Two angles on a line are ${a}° and ${b}°. What is the third angle if all three make a straight line?`, String(180 - a - b), String(180 - a - b + 5), String(180 - a - b - 5), String(a + b)]; }
+    const t = index - 15, a = 25 + t * 9; const correct = 90 - a; return [`An angle of ${a}° sits on a straight line next to a right angle and another angle. What is the third angle?`, String(correct), String(correct + 10), String(correct - 10), String(a)];
+  },
+  'Polygons': index => {
+    const names = ['triangle', 'quadrilateral', 'pentagon', 'hexagon', 'heptagon', 'octagon', 'nonagon', 'decagon', 'hendecagon', 'dodecagon'];
+    if (index < 10) { const name = names[index], sides = index + 3; return [`How many sides does a ${name} have?`, String(sides), String(sides + 1), String(sides - 1), String(sides + 2)]; }
+    const sides = index - 10 + 3, name = names[index - 10]; const others = names.filter(item => item !== name);
+    return [`A shape has ${sides} sides. What is it called?`, name, others[index % others.length], others[(index + 3) % others.length], others[(index + 6) % others.length]];
+  },
+  'Addition': index => {
+    const pairs = [[[1, 3], [1, 6]], [[1, 2], [1, 4]], [[2, 3], [1, 6]], [[1, 4], [1, 8]], [[3, 5], [1, 10]], [[1, 2], [1, 3]], [[2, 5], [1, 2]], [[3, 4], [1, 8]], [[1, 3], [1, 4]], [[2, 3], [1, 4]], [[3, 8], [1, 4]], [[5, 6], [1, 3]], [[1, 2], [3, 8]], [[4, 5], [1, 10]], [[1, 6], [2, 3]], [[7, 12], [1, 4]], [[5, 9], [1, 3]], [[3, 10], [2, 5]], [[7, 8], [1, 4]], [[5, 6], [2, 3]]];
+    const [[an, ad], [bn, bd]] = pairs[index % pairs.length];
+    const commonDenominator = ad === bd ? ad : (ad % bd === 0 ? ad : bd % ad === 0 ? bd : ad * bd);
+    const totalNumerator = an * (commonDenominator / ad) + bn * (commonDenominator / bd);
+    const whole = Math.floor(totalNumerator / commonDenominator), remainder = totalNumerator - whole * commonDenominator;
+    const answer = whole > 0 ? (remainder ? `${whole} ${fracStr(remainder, commonDenominator)}` : String(whole)) : fracStr(totalNumerator, commonDenominator);
+    return [`Find ${fracStr(an, ad)} + ${fracStr(bn, bd)}.`, answer, fracStr(totalNumerator + 1, commonDenominator), fracStr(totalNumerator - 1, commonDenominator), fracStr(an + bn, ad + bd)];
+  },
+  'Subtraction': index => {
+    const pairs = [[[3, 4], [1, 4]], [[5, 6], [1, 3]], [[7, 8], [1, 4]], [[2, 3], [1, 6]], [[3, 5], [1, 10]], [[9, 10], [2, 5]], [[5, 8], [1, 4]], [[4, 5], [1, 10]], [[3, 4], [1, 2]], [[7, 9], [1, 3]], [[5, 6], [1, 2]], [[11, 12], [1, 4]], [[7, 10], [1, 5]], [[8, 9], [2, 3]], [[9, 12], [1, 4]], [[5, 8], [1, 8]], [[11, 15], [1, 5]], [[7, 8], [1, 2]], [[9, 10], [1, 5]], [[13, 15], [1, 3]]];
+    const [[an, ad], [bn, bd]] = pairs[index % pairs.length];
+    const commonDenominator = ad === bd ? ad : (ad % bd === 0 ? ad : bd % ad === 0 ? bd : ad * bd);
+    const totalNumerator = an * (commonDenominator / ad) - bn * (commonDenominator / bd);
+    return [`Find ${fracStr(an, ad)} - ${fracStr(bn, bd)}.`, fracStr(totalNumerator, commonDenominator), fracStr(totalNumerator + 1, commonDenominator), fracStr(totalNumerator - 1, commonDenominator), fracStr(an - bn, ad - bd || 1)];
+  },
+  'Volume': index => {
+    if (index < 5) { const l = 2 + index, w = 2 + index, h = 2; return [`Find the volume of a ${l} × ${w} × ${h} prism.`, String(l * w * h), String(l * w), String(l + w + h), String(l * w * h + 1)]; }
+    if (index < 10) { const t = index - 5, l = 4 + t, w = 3 + t, h = 3; return [`Find the volume of a ${l} × ${w} × ${h} prism.`, String(l * w * h), String(l * w), String(l * w * h + 10), String(l * w * h - 10)]; }
+    if (index < 15) { const t = index - 10, volume = (5 + t) * 4 * 3, base = (5 + t) * 4; return [`Volume is ${volume} cubic units and the base is ${base} square units. Find the height.`, String(volume / base), String(volume / base + 1), String(volume / base - 1), String(volume)]; }
+    const t = index - 15, l = 6 + t, w = 5 + t, h = 4; return [`Find the volume of a ${l} × ${w} × ${h} prism, then subtract 10.`, String(l * w * h - 10), String(l * w * h), String(l * w * h + 10), String(l * w)];
+  },
+  'Conversions': index => {
+    if (index < 5) { const feet = 2 + index; return [`Convert ${feet} feet to inches.`, String(feet * 12), String(feet * 12 + 12), String(feet * 12 - 12), String(feet)]; }
+    if (index < 10) { const t = index - 5, liters = 2 + t; return [`Convert ${liters} liters to milliliters.`, String(liters * 1000), String(liters * 1000 + 1000), String(liters * 1000 - 1000), String(liters)]; }
+    if (index < 15) { const t = index - 10, yards = 2 + t; return [`Convert ${yards} yards to inches.`, String(yards * 36), String(yards * 36 + 36), String(yards * 36 - 36), String(yards * 12)]; }
+    const t = index - 15, gallons = 2 + t; return [`Convert ${gallons} gallons to cups.`, String(gallons * 16), String(gallons * 16 + 16), String(gallons * 16 - 16), String(gallons * 4)];
+  },
+  'Layers': index => {
+    if (index < 5) { const perLayer = 6 + index, layers = 2 + index; return [`${perLayer} cubes per layer × ${layers} layers = ?`, String(perLayer * layers), String(perLayer * layers + layers), String(perLayer * layers - layers), String(perLayer + layers)]; }
+    if (index < 10) { const t = index - 5, perLayer = 10 + t, layers = 3 + t; return [`${perLayer} cubes per layer × ${layers} layers = ?`, String(perLayer * layers), String(perLayer * layers + 10), String(perLayer * layers - 10), String((perLayer - 1) * layers)]; }
+    if (index < 15) { const t = index - 10, layers = 3 + t, perLayer = 12 + t, volume = layers * perLayer; return [`Volume is ${volume} cubic units with ${perLayer} cubes per layer. How many layers?`, String(layers), String(layers + 1), String(layers - 1), String(volume)]; }
+    const t = index - 15, volume = (14 + t) * 4, layers = 4; return [`Volume is ${volume} cubic units with ${layers} layers. How many cubes per layer?`, String(volume / layers), String(volume / layers + 1), String(volume / layers - 1), String(volume)];
+  },
+  'Integers': index => {
+    const pairs = [[-3, 4], [-8, 2], [-1, -5], [-6, -2], [5, -9], [-4, 3], [-7, -3], [3, -6], [-10, -4], [-9, 5], [-12, 8], [-5, -11], [2, -8], [-9, 6], [-2, -7], [4, -3], [-15, -6], [1, -10], [-6, 5], [-13, -8]];
+    const [a, b] = pairs[index];
+    const greater = a > b ? a : b, other = a === greater ? b : a;
+    const filler = greater === 0 ? 1 : 0;
+    let maxAbs = Math.max(Math.abs(a), Math.abs(b));
+    if (maxAbs === greater || maxAbs === other || maxAbs === filler) maxAbs += 1;
+    return [`Which is greater, ${a} or ${b}?`, String(greater), String(other), String(filler), String(maxAbs)];
+  },
+  'Absolute value': index => {
+    const values = [-5, -8, 3, -12, 7, -20, 15, -1, -30, 9, -6, 11, -25, 2, -18, 6, -40, 13, -3, 17];
+    const value = values[index];
+    const correct = Math.abs(value);
+    return [`Find |${value}|.`, String(correct), String(-correct), String(correct + 1), String(correct - 1)];
+  },
+  'Coordinate plane': index => {
+    const points = [[3, 2], [-2, 4], [-4, -1], [6, -3], [-5, 2], [1, -6], [-3, -4], [5, 1], [-1, 7], [4, -5], [-6, 3], [2, -2], [-7, -3], [8, 4], [-2, -8], [7, -1], [-8, 5], [3, -9], [-4, 6], [9, -2]];
+    const [x, y] = points[index];
+    const quadrant = x > 0 && y > 0 ? 'I' : x < 0 && y > 0 ? 'II' : x < 0 && y < 0 ? 'III' : x > 0 && y < 0 ? 'IV' : 'on an axis';
+    const others = ['I', 'II', 'III', 'IV'].filter(item => item !== quadrant);
+    return quadrant === 'on an axis' ? [`In which quadrant is (${x}, ${y})?`, 'On an axis', 'I', 'II', 'III'] : [`In which quadrant is (${x}, ${y})?`, quadrant, others[0], others[1], others[2]];
+  },
+  'Fraction multiplication': index => {
+    if (index < 5) { const n = 1, d = 2 + index, whole = 2; return [`Find ${whole} × ${fracStr(n, d)}.`, fracStr(whole * n, d), fracStr(whole * n + 1, d), fracStr(whole * n, d + 1), String(whole)]; }
+    if (index < 10) { const t = index - 5, n = 2, d = 5 + t, whole = 3 + t; const top = whole * n; return [`Find ${whole} × ${fracStr(n, d)}.`, fracStr(top, d), fracStr(top + 1, d), fracStr(top, d + 1), String(whole)]; }
+    if (index < 15) { const t = index - 10, n = 3, d = 4, whole = 2 + t; const top = whole * n; const wholes = Math.floor(top / d), remainder = top - wholes * d; const correct = remainder ? `${wholes} ${fracStr(remainder, d)}` : String(wholes); return remainder ? [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes), `${wholes + 1} ${fracStr(remainder, d)}`, fracStr(top, d)] : [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes + 1), String(wholes - 1), fracStr(top, d)]; }
+    const t = index - 15, n = 5, d = 6, whole = 3 + t; const top = whole * n; const wholes = Math.floor(top / d), remainder = top - wholes * d; const correct = remainder ? `${wholes} ${fracStr(remainder, d)}` : String(wholes); return remainder ? [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes), `${wholes + 1} ${fracStr(remainder, d)}`, fracStr(top, d)] : [`Find ${whole} × ${fracStr(n, d)}. Write as a mixed number.`, correct, String(wholes + 1), String(wholes - 1), fracStr(top, d)];
+  },
+  'Decimal operations': index => {
+    if (index < 5) { const a = (1.2 + index * 0.4).toFixed(1), whole = 2 + index; const product = (Number(a) * whole).toFixed(1); return [`Find ${a} × ${whole}.`, product, (Number(product) + 0.1).toFixed(1), (Number(product) - 0.1).toFixed(1), (Number(product) + 1).toFixed(1)]; }
+    if (index < 10) { const t = index - 5, dividend = (4.5 + t * 0.6).toFixed(1), divisor = 3; const quotient = (Number(dividend) / divisor).toFixed(2); return [`Find ${dividend} ÷ ${divisor}.`, quotient, (Number(quotient) + 0.1).toFixed(2), (Number(quotient) - 0.1).toFixed(2), (Number(quotient) + 1).toFixed(2)]; }
+    if (index < 15) { const t = index - 10, a = (1.5 + t * 0.2).toFixed(1), b = (2.4 + t * 0.3).toFixed(1); const product = (Number(a) * Number(b)).toFixed(2); return [`Find ${a} × ${b}.`, product, (Number(product) + 0.1).toFixed(2), (Number(product) - 0.1).toFixed(2), (Number(product) + 1).toFixed(2)]; }
+    const t = index - 15, dividend = (2.4 + t * 0.3).toFixed(1), divisor = (0.3 + (t % 3) * 0.1).toFixed(1); const quotient = (Number(dividend) / Number(divisor)).toFixed(1); return [`Find ${dividend} ÷ ${divisor}.`, quotient, (Number(quotient) + 1).toFixed(1), (Number(quotient) - 1).toFixed(1), (Number(quotient) + 0.1).toFixed(1)];
+  }
+};
 
 let state = { subject: 'math', grade: 4, chapter: null, concept: null, question: 0, attempts: 0, answers: {}, wrongChoices: {}, processingAnswer: false, sparks: Number(localStorage.getItem('numberQuestSparks') || 0), started: JSON.parse(localStorage.getItem('numberQuestStarted') || '[]'), completedConcepts: JSON.parse(localStorage.getItem('numberQuestCompletedConcepts') || '[]'), trophies: JSON.parse(localStorage.getItem('numberQuestTrophies') || '[]') };
 const $ = selector => document.querySelector(selector);
@@ -134,27 +356,28 @@ function chaptersFor(subject, grade) { const content = subjectContent[subject]; 
 function gradeLabel(grade) { return grade == null ? '' : grade === 'K' ? 'Kindergarten' : `Grade ${grade}`; }
 function currentChapter() { return chaptersFor(state.subject, state.grade)[state.chapter]; }
 function missionKey() { return `${state.subject}-${state.grade}-${state.chapter}-${state.concept}`; }
-function learnerNumberText(value) { return String(value).replace(/(?<=\d),(?=\d)/g, ''); }
-function missionItem(item, index) { return { question: learnerNumberText(item[0]), correct: learnerNumberText(item[1]), options: item.slice(1).map(learnerNumberText), id: index }; }
+function missionItem(item, index) { return { question: item[0], correct: item[1], options: item.slice(1), id: index, level: levelForIndex(index) }; }
+const MISSION_LENGTH = 20;
 function missionQuestionsFor(grade, chapterIndex, conceptIndex) {
-  if (grade === 4 && chapterIndex === 0 && conceptIndex === 0) {
-    return placeValueQuestions.map(missionItem);
-  }
-  if (grade === 4 && chapterIndex === 0 && conceptIndex === 1) {
-    return roundingQuestions.map(missionItem);
-  }
   const chapter = course[grade].chapters[chapterIndex];
   const concept = chapter[1][conceptIndex];
-  const seedItems = questionSets[grade][chapterIndex].filter(item => item.concept === conceptIndex);
-  const uniqueItems = [];
-  for (const item of seedItems) {
-    if (!uniqueItems.some(existing => existing[0] === item[0])) uniqueItems.push(item);
+  if (concept === 'Place value') {
+    return placeValueQuestions.map(missionItem);
   }
-  for (let index = 0; uniqueItems.length < 10; index++) {
-    const item = strategyQuestion(concept, chapter[0], index);
-    if (!uniqueItems.some(existing => existing[0] === item[0])) uniqueItems.push(item);
+  if (concept === 'Rounding') {
+    return roundingQuestions.map(missionItem);
   }
-  return uniqueItems.slice(0, 10).map(missionItem);
+  const generator = conceptQuestionBank[concept];
+  const seen = new Set();
+  const items = [];
+  for (let index = 0; index < MISSION_LENGTH; index++) {
+    const item = generator(index);
+    const key = item[0].trim().toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    items.push(item);
+  }
+  return items.map(missionItem);
 }
 function genericQuestions() { return missionQuestionsFor(state.grade, state.chapter, state.concept); }
 function currentQuestions() { return genericQuestions(); }
@@ -162,12 +385,6 @@ function currentQuestion() { return currentQuestions()[state.question]; }
 function completedConceptKey() { return `${state.subject}-${state.grade}-${state.chapter}-${state.concept}`; }
 function isConceptComplete(index) { return state.completedConcepts.includes(`${state.subject}-${state.grade}-${state.chapter}-${index}`); }
 function answerMarkup(question, complete) { return `<div class="answer-list">${question.options.sort(() => Math.random() - .5).map(answer => `<button class="answer-button" data-answer="${answer}" ${complete ? 'disabled' : ''}>${answer}</button>`).join('')}</div>`; }
-function removeNumericCommas(root) {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  const textNodes = [];
-  while (walker.nextNode()) textNodes.push(walker.currentNode);
-  textNodes.forEach(node => { node.nodeValue = node.nodeValue.replace(/(?<=\d),(?=\d)/g, ''); });
-}
 function subjectHasContent(id, grade) { return !!chaptersFor(id, grade); }
 function gradeHasContent(grade) { return subjects.some(subject => chaptersFor(subject.id, grade)); }
 function renderGradeRail() {
@@ -337,14 +554,13 @@ const conceptCases = {
 };
 function casesForConcept(concept) { const cases = conceptCases[concept]; return cases ? `<div class="concept-cases"><p class="cases-heading">Explore every case</p><div class="case-grid">${cases.map(([title, text]) => `<div class="case-card"><b>${title}</b><span>${text}</span></div>`).join('')}</div></div>` : ''; }
 function startChapter(index) { state.chapter = index; state.concept = null; state.question = 0; state.attempts = 0; const key = `${state.subject}-${state.grade}-${index}`; if (!state.started.includes(key)) { state.started.push(key); save(); } $('#emptyState').hidden = true; $('#lessonView').hidden = false; renderConceptPicker(); renderChapters(); $('#playground').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-function renderConceptPicker() { const chapter = currentChapter(); const completed = chapter[1].filter((_, index) => isConceptComplete(index)).length; $('#lessonView').innerHTML = `<section class="lesson-panel concept-picker"><p class="chapter-label">Chapter ${state.chapter + 1}</p><h2>${chapter[0]}</h2><p class="lesson-copy">Complete all three skill missions to finish this chapter. ${completed} of ${chapter[1].length} sections complete.</p><div class="concept-choice-grid">${chapter[1].map((concept,index) => { const complete = isConceptComplete(index); return `<button class="concept-choice ${complete ? 'section-complete' : ''}" data-start-concept="${index}"><span>${complete ? '✓' : index + 1}</span><strong>${concept}</strong><small>${complete ? 'Completed - practice again' : '10-question mission'}</small></button>`; }).join('')}</div></section>`; document.querySelectorAll('[data-start-concept]').forEach(button => button.addEventListener('click', () => { state.concept=Number(button.dataset.startConcept); state.question=0; state.attempts=0; state.answers={}; state.wrongChoices={}; renderLesson(); })); }
+function renderConceptPicker() { const chapter = currentChapter(); const completed = chapter[1].filter((_, index) => isConceptComplete(index)).length; $('#lessonView').innerHTML = `<section class="lesson-panel concept-picker"><p class="chapter-label">Chapter ${state.chapter + 1}</p><h2>${chapter[0]}</h2><p class="lesson-copy">Complete all three skill missions to finish this chapter. ${completed} of ${chapter[1].length} sections complete.</p><div class="concept-choice-grid">${chapter[1].map((concept,index) => { const complete = isConceptComplete(index); return `<button class="concept-choice ${complete ? 'section-complete' : ''}" data-start-concept="${index}"><span>${complete ? '✓' : index + 1}</span><strong>${concept}</strong><small>${complete ? 'Completed - practice again' : '20-question mission, easy to expert'}</small></button>`; }).join('')}</div></section>`; document.querySelectorAll('[data-start-concept]').forEach(button => button.addEventListener('click', () => { state.concept=Number(button.dataset.startConcept); state.question=0; state.attempts=0; state.answers={}; state.wrongChoices={}; renderLesson(); })); }
 function placeValueVisual() { return `<div class="place-chart"><div class="chart-number">582,641</div><div class="chart-row"><b>Hundred-thousands</b><b>Ten-thousands</b><b>Thousands</b><b>Hundreds</b><b>Tens</b><b>Ones</b></div><div class="chart-row chart-values"><span>5<br><small>500,000</small></span><span class="focus">8<br><small>80,000</small></span><span>2<br><small>2,000</small></span><span>6<br><small>600</small></span><span>4<br><small>40</small></span><span>1<br><small>1</small></span></div></div>`; }
 function renderLesson() {
   state.processingAnswer = false;
-  const chapter = currentChapter(), question = currentQuestion(), concept = chapter[1][state.concept], complete = state.answers[state.question], completedQuestions = Object.keys(state.answers).length;
+  const chapter = currentChapter(), question = currentQuestion(), concept = chapter[1][state.concept], complete = state.answers[state.question], completedQuestions = Object.keys(state.answers).length, missionTotal = currentQuestions().length;
   const lesson = state.grade === 4 && state.chapter === 0 && state.concept === 0 ? '<p class="lesson-copy"><strong>Place value tells us what a digit is worth because of where it sits.</strong> The digit 8 in 582,641 is not worth eight. It is in the ten-thousands place, so it is worth 80,000. Each step left is 10 times greater; each step right is 10 times smaller.</p>' + placeValueVisual() + '<p class="lesson-copy"><strong>Read it in chunks:</strong> 582,641 is five hundred eighty-two thousand, six hundred forty-one. Use the chart to name a digit, write a number, compare numbers, or build expanded form.</p>' + casesForConcept('Place value') : `${lessonForConcept(concept, chapter[2])}${visualForConcept(concept)}${casesForConcept(concept)}`;
-  $('#lessonView').innerHTML = `<div class="lesson-layout"><section class="lesson-panel"><p class="chapter-label">Chapter ${state.chapter + 1} · Concept mission</p><div class="concept-mission-nav"><button class="text-button" id="backToConcepts">← All concepts</button><span>${state.concept + 1} of ${chapter[1].length}</span></div><h2>${concept}</h2>${lesson}<p class="lesson-copy"><strong>Mission tip:</strong> Use the model, then explain to yourself why the answer makes sense.</p><div class="concept-arrows"><button class="primary-button muted-button" id="previousConcept" ${state.concept===0?'disabled':''}>← Previous concept</button><button class="primary-button" id="nextConcept" ${state.concept===chapter[1].length-1?'disabled':''}>Next concept →</button></div></section><section class="question-panel"><div class="question-meta"><span>Question ${state.question + 1} of 10</span><span class="attempt-dots">${[0, 1, 2].map(index => `<i class="${index < state.attempts ? 'used' : ''}"></i>`).join('')}</span></div><div class="section-progress"><strong>${completedQuestions} / 10 completed</strong><span>${completedQuestions === 10 ? 'Section complete!' : 'Keep going - every question counts.'}</span></div><div class="question-nav">${currentQuestions().map((_,index) => `<button data-go="${index}" class="nav-dot ${index===state.question?'active':''} ${state.answers[index]?'done':''}" title="Question ${index + 1}">${index + 1}</button>`).join('')}</div><h2>${question.question}</h2>${answerMarkup(question, complete)}<p class="feedback" id="feedback">${complete ? 'Completed! Choose another question or continue your section.' : 'Choose the answer that makes the math story true.'}</p><div class="question-arrows"><button class="icon-button" id="previousQuestion" ${state.question===0?'disabled':''} title="Previous question">←</button><button class="icon-button" id="nextQuestion" ${state.question===9?'disabled':''} title="Next question">→</button></div></section></div>`;
-  removeNumericCommas($('#lessonView'));
+  $('#lessonView').innerHTML = `<div class="lesson-layout"><section class="lesson-panel"><p class="chapter-label">Chapter ${state.chapter + 1} · Concept mission</p><div class="concept-mission-nav"><button class="text-button" id="backToConcepts">← All concepts</button><span>${state.concept + 1} of ${chapter[1].length}</span></div><h2>${concept}</h2>${lesson}<p class="lesson-copy"><strong>Mission tip:</strong> Use the model, then explain to yourself why the answer makes sense.</p><div class="concept-arrows"><button class="primary-button muted-button" id="previousConcept" ${state.concept===0?'disabled':''}>← Previous concept</button><button class="primary-button" id="nextConcept" ${state.concept===chapter[1].length-1?'disabled':''}>Next concept →</button></div></section><section class="question-panel"><div class="question-meta"><span>Question ${state.question + 1} of ${missionTotal}</span><span class="level-badge level-${question.level.toLowerCase()}">${question.level}</span><span class="attempt-dots">${[0, 1, 2].map(index => `<i class="${index < state.attempts ? 'used' : ''}"></i>`).join('')}</span></div><div class="section-progress"><strong>${completedQuestions} / ${missionTotal} completed</strong><span>${completedQuestions === missionTotal ? 'Section complete!' : 'Keep going - every question counts.'}</span></div><div class="question-nav">${currentQuestions().map((_,index) => `<button data-go="${index}" class="nav-dot ${index===state.question?'active':''} ${state.answers[index]?'done':''}" title="Question ${index + 1}">${index + 1}</button>`).join('')}</div><h2>${question.question}</h2>${answerMarkup(question, complete)}<p class="feedback" id="feedback">${complete ? 'Completed! Choose another question or continue your section.' : 'Choose the answer that makes the math story true.'}</p><div class="question-arrows"><button class="icon-button" id="previousQuestion" ${state.question===0?'disabled':''} title="Previous question">←</button><button class="icon-button" id="nextQuestion" ${state.question===missionTotal-1?'disabled':''} title="Next question">→</button></div></section></div>`;
   document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => { state.question=Number(button.dataset.go); state.attempts=0; renderLesson(); }));
   $('#previousQuestion').addEventListener('click', () => { state.question--; state.attempts=0; renderLesson(); }); $('#nextQuestion').addEventListener('click', () => { state.question++; state.attempts=0; renderLesson(); });
   $('#backToConcepts').addEventListener('click', renderConceptPicker);
@@ -359,7 +575,7 @@ function checkAnswer(button, question) {
   state.processingAnswer = true;
   const right = question.correct;
   if (button.dataset.answer === right) {
-    button.classList.add('correct'); document.querySelectorAll('[data-answer]').forEach(answer => answer.disabled = true); state.sparks += 1; state.answers[state.question]='correct'; save(); $('#sparkCount').textContent = `${state.sparks} sparks`; $('#feedback').innerHTML = `<span class="cheer">${celebrate()}</span>`; if (Object.keys(state.answers).length === 10) setTimeout(showResults, 700); return;
+    button.classList.add('correct'); document.querySelectorAll('[data-answer]').forEach(answer => answer.disabled = true); state.sparks += 1; state.answers[state.question]='correct'; save(); $('#sparkCount').textContent = `${state.sparks} sparks`; $('#feedback').innerHTML = `<span class="cheer">${celebrate()}</span>`; if (Object.keys(state.answers).length === currentQuestions().length) setTimeout(showResults, 700); return;
   }
   const wrongAnswer = button.dataset.answer;
   const wrongChoices = state.wrongChoices[state.question] || [];
@@ -369,11 +585,11 @@ function checkAnswer(button, question) {
   button.classList.add('wrong'); button.disabled = true; state.attempts = wrongChoices.length;
   if (state.attempts === 1) setTimeout(() => { state.processingAnswer = false; }, 0);
   if (state.attempts >= 2 && state.attempts < 3) { const concept = currentChapter()[1][state.concept]; document.querySelectorAll('[data-answer]').forEach(answer => answer.disabled = true); $('#reteachTitle').textContent = 'Let’s look at the idea again'; $('#reteachModal').hidden = false; $('#reteachContent').innerHTML = `${lessonForConcept(concept, currentChapter()[2])}${visualForConcept(concept)}<p class="lesson-copy"><strong>Try a fresh approach:</strong> Look at the picture, then match the numbers in the question to the model.</p>`; }
-  else { document.querySelectorAll('[data-answer]').forEach(answer => answer.disabled = true); $('#feedback').innerHTML = `<strong>The answer is ${right}.</strong><div class="solution-box">${explain(question)}</div><button class="primary-button" id="continueButton">Continue to the next challenge</button>`; $('#continueButton').addEventListener('click', () => { state.answers[state.question] = 'guided'; state.attempts = 0; if (Object.keys(state.answers).length === 10) showResults(); else { state.question = Math.min(state.question + 1, 9); renderLesson(); } }); }
+  else { document.querySelectorAll('[data-answer]').forEach(answer => answer.disabled = true); $('#feedback').innerHTML = `<strong>The answer is ${right}.</strong><div class="solution-box">${explain(question)}</div><button class="primary-button" id="continueButton">Continue to the next challenge</button>`; $('#continueButton').addEventListener('click', () => { state.answers[state.question] = 'guided'; state.attempts = 0; const total = currentQuestions().length; if (Object.keys(state.answers).length === total) showResults(); else { state.question = Math.min(state.question + 1, total - 1); renderLesson(); } }); }
 }
 function explain(question) { return `Use the concept model step by step. The answer that fits the question is <strong>${question.correct}</strong>.`; }
-function showResults() { const correct = Object.values(state.answers).filter(result => result === 'correct').length; const tier = correct >= 9 ? ['Diamond','◆','Outstanding precision. You are ready for a tougher mission.'] : correct >= 7 ? ['Gold','★','Excellent work. Your practice is paying off.'] : correct >= 5 ? ['Silver','●','Strong persistence. Keep building this skill.'] : ['Bronze','▲','You stayed with it. Practice turns effort into power.']; const key = completedConceptKey(); if (!state.completedConcepts.includes(key)) state.completedConcepts.push(key); state.trophies.push({ tier:tier[0], symbol:tier[1], concept:currentChapter()[1][state.concept] }); save(); const chapter = currentChapter(); const nextLabel = state.concept < chapter[1].length - 1 ? `Start next section: ${chapter[1][state.concept + 1]} →` : 'View completed sections'; $('#lessonView').innerHTML=`<section class="lesson-panel success-card"><div class="trophy ${tier[0].toLowerCase()}">${tier[1]}</div><p class="eyebrow">Section complete</p><h2>${tier[0]} trophy earned</h2><div class="marks-card"><strong>Section mark: ${correct} / 10</strong><span>Completed: ${chapter[1][state.concept]}</span></div><p class="lesson-copy">${tier[2]}</p><p class="lesson-copy">This section is now marked complete in the chapter list. ${state.concept < chapter[1].length - 1 ? 'Move on when you are ready.' : 'You finished every section in this chapter.'}</p><div class="result-actions"><button class="primary-button" id="nextSection">${nextLabel}</button><button class="primary-button muted-button" id="backToConcepts">All sections</button></div></section>`; $('#backToConcepts').addEventListener('click',renderConceptPicker); $('#nextSection').addEventListener('click', () => { if (state.concept < chapter[1].length - 1) { state.concept++; state.question=0; state.attempts=0; state.answers={}; state.wrongChoices={}; renderLesson(); } else renderConceptPicker(); }); }
-function renderRewards() { const counts = ['Diamond','Gold','Silver','Bronze'].map(tier => [tier, state.trophies.filter(item => item.tier === tier).length]); $('#rewardsContent').innerHTML = `<div class="reward-totals">${counts.map(([tier,count]) => `<div class="reward-total ${tier.toLowerCase()}"><b>${tier}</b><strong>${count}</strong></div>`).join('')}</div>${state.trophies.length ? `<div class="trophy-list">${state.trophies.slice().reverse().map(item => `<div class="trophy-item ${item.tier.toLowerCase()}"><span>${item.symbol}</span><div><b>${item.tier} trophy</b><small>${item.concept}</small></div></div>`).join('')}</div>` : '<p class="lesson-copy">Your cabinet is waiting. Complete a 10-question concept mission to earn your first trophy.</p>'}`; }
+function showResults() { const total = currentQuestions().length; const correct = Object.values(state.answers).filter(result => result === 'correct').length; const tier = correct >= total * 0.9 ? ['Diamond','◆','Outstanding precision. You are ready for a tougher mission.'] : correct >= total * 0.7 ? ['Gold','★','Excellent work. Your practice is paying off.'] : correct >= total * 0.5 ? ['Silver','●','Strong persistence. Keep building this skill.'] : ['Bronze','▲','You stayed with it. Practice turns effort into power.']; const key = completedConceptKey(); if (!state.completedConcepts.includes(key)) state.completedConcepts.push(key); state.trophies.push({ tier:tier[0], symbol:tier[1], concept:currentChapter()[1][state.concept] }); save(); const chapter = currentChapter(); const nextLabel = state.concept < chapter[1].length - 1 ? `Start next section: ${chapter[1][state.concept + 1]} →` : 'View completed sections'; $('#lessonView').innerHTML=`<section class="lesson-panel success-card"><div class="trophy ${tier[0].toLowerCase()}">${tier[1]}</div><p class="eyebrow">Section complete</p><h2>${tier[0]} trophy earned</h2><div class="marks-card"><strong>Section mark: ${correct} / ${total}</strong><span>Completed: ${chapter[1][state.concept]}</span></div><p class="lesson-copy">${tier[2]}</p><p class="lesson-copy">This section is now marked complete in the chapter list. ${state.concept < chapter[1].length - 1 ? 'Move on when you are ready.' : 'You finished every section in this chapter.'}</p><div class="result-actions"><button class="primary-button" id="nextSection">${nextLabel}</button><button class="primary-button muted-button" id="backToConcepts">All sections</button></div></section>`; $('#backToConcepts').addEventListener('click',renderConceptPicker); $('#nextSection').addEventListener('click', () => { if (state.concept < chapter[1].length - 1) { state.concept++; state.question=0; state.attempts=0; state.answers={}; state.wrongChoices={}; renderLesson(); } else renderConceptPicker(); }); }
+function renderRewards() { const counts = ['Diamond','Gold','Silver','Bronze'].map(tier => [tier, state.trophies.filter(item => item.tier === tier).length]); $('#rewardsContent').innerHTML = `<div class="reward-totals">${counts.map(([tier,count]) => `<div class="reward-total ${tier.toLowerCase()}"><b>${tier}</b><strong>${count}</strong></div>`).join('')}</div>${state.trophies.length ? `<div class="trophy-list">${state.trophies.slice().reverse().map(item => `<div class="trophy-item ${item.tier.toLowerCase()}"><span>${item.symbol}</span><div><b>${item.tier} trophy</b><small>${item.concept}</small></div></div>`).join('')}</div>` : '<p class="lesson-copy">Your cabinet is waiting. Complete a 20-question concept mission to earn your first trophy.</p>'}`; }
 $('#tryAgain').addEventListener('click', () => { $('#reteachModal').hidden = true; renderLesson(); });
 $('#openRewards').addEventListener('click', () => { renderRewards(); $('#rewardsModal').hidden = false; });
 $('#closeRewards').addEventListener('click', () => { $('#rewardsModal').hidden = true; });

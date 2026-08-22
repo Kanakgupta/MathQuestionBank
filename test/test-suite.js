@@ -5,20 +5,28 @@
     if (!condition) throw new Error(message);
   }
 
+  const MISSION_LENGTH = 20;
+
   function validateMission(api, grade, chapterIndex, conceptIndex, concept) {
     const questions = api.missionQuestionsFor(Number(grade), chapterIndex, conceptIndex);
     const missionName = `Grade ${grade}, chapter ${chapterIndex + 1}, ${concept}`;
 
-    assert(questions.length === 10, `${missionName}: expected 10 questions, found ${questions.length}`);
-    assert(new Set(questions.map(question => normalize(question.question))).size === 10, `${missionName}: repeated question text found`);
+    assert(questions.length === MISSION_LENGTH, `${missionName}: expected ${MISSION_LENGTH} questions, found ${questions.length}`);
+    assert(new Set(questions.map(question => normalize(question.question))).size === MISSION_LENGTH, `${missionName}: repeated question text found`);
 
+    const repeatCall = api.missionQuestionsFor(Number(grade), chapterIndex, conceptIndex);
+    assert(JSON.stringify(repeatCall.map(q => q.question)) === JSON.stringify(questions.map(q => q.question)), `${missionName}: mission is not deterministic across repeated generation calls`);
+
+    const levelCounts = { Easy: 0, Medium: 0, Hard: 0, Expert: 0 };
     for (const [questionIndex, question] of questions.entries()) {
       assert(question.question && question.correct, `${missionName}, question ${questionIndex + 1}: missing question or answer`);
       assert(Array.isArray(question.options) && question.options.length === 4, `${missionName}, question ${questionIndex + 1}: expected four choices`);
       assert(new Set(question.options.map(normalize)).size === 4, `${missionName}, question ${questionIndex + 1}: duplicate answer choices found`);
       assert(question.options.filter(option => normalize(option) === normalize(question.correct)).length === 1, `${missionName}, question ${questionIndex + 1}: correct answer must appear exactly once`);
-      assert(!/\d,\d/.test(`${question.question} ${question.options.join(' ')}`), `${missionName}, question ${questionIndex + 1}: comma-formatted learner number found`);
+      assert(['Easy', 'Medium', 'Hard', 'Expert'].includes(question.level), `${missionName}, question ${questionIndex + 1}: missing or invalid difficulty level`);
+      levelCounts[question.level]++;
     }
+    assert(Object.values(levelCounts).every(count => count === 5), `${missionName}: expected 5 questions per difficulty level, found ${JSON.stringify(levelCounts)}`);
   }
 
   window.runNumberQuestTests = api => {
@@ -41,6 +49,17 @@
 
     const rounding = api.missionQuestionsFor(4, 0, 1);
     assert(rounding.every(question => /^Round |^Which number rounds/.test(question.question)), 'Rounding mission contains non-rounding prompts');
+
+    const allQuestionTexts = [];
+    for (const [grade, gradeContent] of grades) {
+      for (const [chapterIndex, chapter] of gradeContent.chapters.entries()) {
+        for (const conceptIndex of chapter[1].keys()) {
+          const questions = api.missionQuestionsFor(Number(grade), chapterIndex, conceptIndex);
+          allQuestionTexts.push(...questions.map(q => `${grade}-${chapterIndex}-${conceptIndex}-${normalize(q.question)}`));
+        }
+      }
+    }
+    assert(new Set(allQuestionTexts).size === allQuestionTexts.length, 'Duplicate question text found within a single mission across the full content set');
 
     return { passed: results.length, results };
   };
@@ -69,7 +88,7 @@
       if (index < rounding.length - 1) document.querySelector('#nextQuestion').click();
     }
     await new Promise(resolve => setTimeout(resolve, 750));
-    assert(document.querySelector('.marks-card')?.textContent.includes('10 / 10'), 'UI flow: completed section did not show a 10 / 10 mark');
+    assert(document.querySelector('.marks-card')?.textContent.includes('20 / 20'), 'UI flow: completed section did not show a 20 / 20 mark');
     assert(document.querySelector('#nextSection')?.textContent.includes('Add & subtract'), 'UI flow: completed section did not offer the next section');
     document.querySelector('#backToConcepts').click();
     assert(document.querySelector('[data-start-concept="1"]').textContent.includes('Completed'), 'UI flow: completed section was not marked in the concept picker');
