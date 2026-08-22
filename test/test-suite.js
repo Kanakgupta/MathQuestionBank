@@ -44,30 +44,41 @@
   window.runNumberQuestUiFlowTest = async frame => {
     const document = frame.contentDocument;
     const api = frame.contentWindow.NumberQuestTestAPI;
+    const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
     const clickAnswer = answer => {
       const button = [...document.querySelectorAll('[data-answer]')].find(item => normalize(item.textContent) === normalize(answer));
       assert(button, `UI flow: answer choice ${answer} was not rendered`);
       button.click();
     };
+    const unlockAnswers = () => {
+      const strategy = document.querySelector('[data-strategy]');
+      const note = document.querySelector('#workNote');
+      assert(strategy && note, 'UI flow: Paper First checkpoint was not rendered');
+      strategy.click();
+      note.value = 'I wrote an equation and checked the place values.';
+      note.dispatchEvent(new Event('input', { bubbles: true }));
+      assert(!document.querySelector('#unlockAnswers').disabled, 'UI flow: valid work did not unlock the submit button');
+      document.querySelector('#unlockAnswers').click();
+    };
 
     document.querySelector('[data-chapter="0"]').click();
     document.querySelector('[data-start-concept="0"]').click();
     const mission = api.missionQuestionsFor(4, 0, 0);
+
+    assert(!document.querySelector('[data-answer]'), 'UI flow: answers appeared before Paper First was complete');
+    unlockAnswers();
+    clickAnswer(mission[0].options.find(option => normalize(option) !== normalize(mission[0].correct)));
+    assert(!document.querySelector('#reteachModal').hidden, 'UI flow: rapid guess did not trigger a Paper First reset');
+    assert(document.querySelector('#reteachTitle').textContent.includes('Pause'), 'UI flow: rapid guess did not explain the pause');
+    document.querySelector('#tryAgain').click();
+    assert(document.querySelector('#workNote'), 'UI flow: rapid guess did not return to the work checkpoint');
+
+    unlockAnswers();
+    await wait(2050);
     clickAnswer(mission[0].correct);
-    await new Promise(resolve => setTimeout(resolve, 20));
+    await wait(20);
     assert(document.querySelector('.cheer'), 'UI flow: correct answer did not show a celebration');
     assert([...document.querySelectorAll('[data-answer]')].every(button => button.disabled), 'UI flow: answer buttons were not locked after a correct answer');
-
-    document.querySelector('#nextQuestion').click();
-    const wrongAnswer = mission[1].options.find(option => normalize(option) !== normalize(mission[1].correct));
-    clickAnswer(wrongAnswer);
-    assert(!document.querySelector('#reteachModal').hidden, 'UI flow: first incorrect answer did not show reteach');
-    document.querySelector('#tryAgain').click();
-    clickAnswer(wrongAnswer);
-    assert(!document.querySelector('#reteachModal').hidden, 'UI flow: second incorrect answer did not show reteach');
-    document.querySelector('#tryAgain').click();
-    clickAnswer(wrongAnswer);
-    assert(document.querySelector('#continueButton'), 'UI flow: third incorrect answer did not show a solution continue button');
-    return 'PASS shared UI flow: celebrate, reteach, third-attempt solution';
+    return 'PASS shared UI flow: Paper First gate, rapid-guess reset, and celebration';
   };
 })();
